@@ -23,7 +23,7 @@ class GAN(nn.Module):
         self.generator = Generator(zdim=zdim, im_channels=3, hdim=channels*2**(len(blocks)-1), blocks=blocks)
         self.discriminator = ConvDiscriminator(im_channels=3, hdim=channels, blocks=blocks,)
         self.distribution = T.distributions.normal.Normal(0, 1)
-        self.d_optim = optim.Adam(self.discriminator.parameters(), 4e-4, betas=(0.5, 0.9))
+        self.d_optim = optim.Adam(self.discriminator.parameters(), 1e-4, betas=(0.5, 0.9))
         self.g_optim = optim.Adam(self.generator.parameters(), 1e-4, betas=(0.5, 0.9))
 
         self.zdim = zdim
@@ -102,7 +102,11 @@ def train(flags):
 
     old_time = time.clock()
     for i, (real, _) in enumerate(loader):
-        samples = model.sample(flags.batch_size)
+        if i % flags.disc_iters != 0:
+            with T.no_grad():
+                samples = model.sample(flags.batch_size)
+        else:
+            samples = model.sample(flags.batch_size)
         real = real.to(device)
         d_loss, g_loss, div = wgan_objective(model.discriminator, real, samples)
 
@@ -110,10 +114,11 @@ def train(flags):
         nn.utils.clip_grad_norm_(model.discriminator.parameters(), 1)
         model.d_optim.step()
         model.d_optim.zero_grad()
-        g_loss.backward()
-        nn.utils.clip_grad_norm_(model.generator.parameters(), 1)
-        model.g_optim.step()
-        model.g_optim.zero_grad()
+        if i % flags.disc_iters == 0:
+            g_loss.backward()
+            nn.utils.clip_grad_norm_(model.generator.parameters(), 1)
+            model.g_optim.step()
+            model.g_optim.zero_grad()
 
         if i > flags.iters:
             break
@@ -139,6 +144,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='WGAN-GP training.')
     parser.add_argument('--batch_size', type=int, default=16)
     parser.add_argument("--iters", type=int, default=100000, help="Number of iters to train for")
+    parser.add_argument("--disc_iters", type=int, default=4, help="Number of disc iters per gen iter")
     parser.add_argument("--sample_freq", type=int, default=1000, help="How often to sample")
     parser.add_argument("--print_freq", type=int, default=10, help="How often to print")
     parser.add_argument("--save_freq", type=int, default=1000, help="How often to save")
