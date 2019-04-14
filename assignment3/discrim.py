@@ -17,18 +17,18 @@ class ResBlock(nn.Module):
         super(ResBlock, self).__init__()
         if inchannels != outchannels:
             if stride > 0:
-                self.upscaler = (nn.Conv2d(inchannels, outchannels, 3,
+                self.upscaler = nn.utils.spectral_norm(nn.Conv2d(inchannels, outchannels, 3,
                                                                  stride=stride, padding=1))
             elif stride < 0:
-                self.upscaler = (nn.ConvTranspose2d(inchannels, outchannels, 4,
+                self.upscaler = nn.utils.spectral_norm(nn.ConvTranspose2d(inchannels, outchannels, 4,
                                                                           padding=1, stride=-stride))
             self.upscale = True
         else:
             self.upscale = False
 
-        self.conv1 = (nn.Conv2d(outchannels, outchannels, 3, padding=1))
+        self.conv1 = nn.utils.spectral_norm(nn.Conv2d(outchannels, outchannels, 3, padding=1))
         self.bn1 = nn.BatchNorm2d(outchannels)
-        self.conv2 = (nn.Conv2d(outchannels, outchannels, 3, padding=1))
+        self.conv2 = nn.utils.spectral_norm(nn.Conv2d(outchannels, outchannels, 3, padding=1))
         self.bn2 = nn.BatchNorm2d(outchannels)
 
         self.relu = nn.LeakyReLU(0.2)
@@ -64,7 +64,7 @@ class Generator(nn.Module):
                 self.blocks.append(ResBlock(current_dim, current_dim, stride=1))
             new_dim = current_dim//2
 
-        self.final = (nn.Conv2d(current_dim, im_channels, 7, padding=3))
+        self.final = nn.utils.spectral_norm(nn.Conv2d(current_dim, im_channels, 7, padding=3))
 
     def forward(self, x):
         current = self.initial(x)
@@ -97,8 +97,8 @@ class ConvDiscriminator(nn.Module):
                 self.blocks.append(ResBlock(current_dim, current_dim, stride=1))
             new_dim = current_dim*2
 
-        self.fc1 = (nn.Linear(current_dim*4, current_dim))
-        self.fc2 = (nn.Linear(current_dim, 1))
+        self.fc1 = nn.utils.spectral_norm(nn.Linear(current_dim*4, current_dim))
+        self.fc2 = nn.utils.spectral_norm(nn.Linear(current_dim, 1))
 
     def forward(self, x):
         current = self.initial(x)
