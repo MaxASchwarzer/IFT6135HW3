@@ -104,9 +104,9 @@ def train(flags):
     for i, (real, _) in enumerate(loader):
         if i % flags.disc_iters != 0:
             with T.no_grad():
-                samples = model.sample(flags.batch_size)
+                samples = model.sample(real.shape[0])
         else:
-            samples = model.sample(flags.batch_size)
+            samples = model.sample(real.shape[0])
         real = real.to(device)
         d_loss, g_loss, div = wgan_objective(model.discriminator, real, samples)
 
