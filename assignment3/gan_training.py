@@ -36,7 +36,7 @@ class GAN(nn.Module):
     def sample_numpy(self, batch_size=32, total=1000, save="GAN_Samples"):
         with T.no_grad():
             images = []
-            for batch in range(np.ceil(batch_size/total)):
+            for batch in range(int(np.ceil(batch_size/total))):
                 sample_z = self.distribution.sample((batch_size, self.zdim)).to(device)
                 sample_images = self.generator(sample_z)
                 images.append(sample_images)
@@ -101,38 +101,41 @@ def train(flags):
     model = model.to(device)
 
     old_time = time.clock()
-    for i, (real, _) in enumerate(loader):
-        if i % flags.disc_iters != 0:
-            with T.no_grad():
+    i = 0
+    while i < flags.iters:
+        for real, _ in loader:
+            i += 1
+            if i % flags.disc_iters != 0:
+                with T.no_grad():
+                    samples = model.sample(real.shape[0])
+            else:
                 samples = model.sample(real.shape[0])
-        else:
-            samples = model.sample(real.shape[0])
-        real = real.to(device)
-        d_loss, g_loss, div = wgan_objective(model.discriminator, real, samples)
+            real = real.to(device)
+            d_loss, g_loss, div = wgan_objective(model.discriminator, real, samples)
 
-        d_loss.backward(retain_graph=True)
-        nn.utils.clip_grad_norm_(model.discriminator.parameters(), 1)
-        model.d_optim.step()
-        model.d_optim.zero_grad()
-        if i % flags.disc_iters == 0:
-            g_loss.backward()
-            nn.utils.clip_grad_norm_(model.generator.parameters(), 1)
-            model.g_optim.step()
-            model.g_optim.zero_grad()
+            d_loss.backward(retain_graph=True)
+            nn.utils.clip_grad_norm_(model.discriminator.parameters(), 1)
+            model.d_optim.step()
+            model.d_optim.zero_grad()
+            if i % flags.disc_iters == 0:
+                g_loss.backward()
+                nn.utils.clip_grad_norm_(model.generator.parameters(), 1)
+                model.g_optim.step()
+                model.g_optim.zero_grad()
 
-        if i > flags.iters:
-            break
-        if i % flags.print_freq == 0:
-            current_time = time.clock()
-            per_iter = (current_time - old_time)/flags.print_freq
-            old_time = current_time
-            print("Generator gap: {0:.4f}; time per iter: {1:.4f}".format(div.item(), per_iter))
+            if i > flags.iters:
+                break
+            if i % flags.print_freq == 0:
+                current_time = time.clock()
+                per_iter = (current_time - old_time)/flags.print_freq
+                old_time = current_time
+                print("Generator gap: {0:.4f}; time per iter: {1:.4f}".format(div.item(), per_iter))
 
-        if i % flags.sample_freq == 0:
-            file = flags.save.replace(".pt", "") + str(i) + ".png"
-            torchvision.utils.save_image(samples[:16].detach().cpu(), file)
-        if i % flags.save_freq == 0:
-            T.save(model, flags.save)
+            if i % flags.sample_freq == 0:
+                file = flags.save.replace(".pt", "") + str(i) + ".png"
+                torchvision.utils.save_image(samples[:16].detach().cpu(), file)
+            if i % flags.save_freq == 0:
+                T.save(model, flags.save)
 
 
 
