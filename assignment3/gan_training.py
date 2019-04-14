@@ -126,7 +126,7 @@ def train(flags):
             current_time = time.clock()
             per_iter = (current_time - old_time)/flags.print_freq
             old_time = current_time
-            print(d_loss.item(), g_loss.item(), div.item(), per_iter)
+            print("Generator gap: {0:.4f}; time per iter: {}".format(div.item(), per_iter))
 
         if i % flags.sample_freq == 0:
             file = flags.save.replace(".pt", "") + str(i) + ".png"
