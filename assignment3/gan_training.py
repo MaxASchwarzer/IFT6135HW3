@@ -129,12 +129,14 @@ def train(flags):
                 current_time = time.clock()
                 per_iter = (current_time - old_time)/flags.print_freq
                 old_time = current_time
-                print("Iter{0}; Generator gap: {1:.4f}; time per iter: {2:.4f}".format(i, div.item(), per_iter))
+                print("Iter {0}; Generator gap: {1:.4f}; time per iter: {2:.4f}".format(i, div.item(), per_iter))
 
             if i % flags.sample_freq == 0:
                 file = flags.save.replace(".pt", "") + str(i) + ".png"
+                print("Saving samples in {}".format(file))
                 torchvision.utils.save_image(samples[:16].detach().cpu(), file)
             if i % flags.save_freq == 0:
+                print("Saving model in {}".format(flags.save))
                 T.save(model, flags.save)
 
 
