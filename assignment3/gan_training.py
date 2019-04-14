@@ -23,8 +23,8 @@ class GAN(nn.Module):
         self.generator = Generator(zdim=zdim, im_channels=3, hdim=channels*2**(len(blocks)-1), blocks=blocks)
         self.discriminator = ConvDiscriminator(im_channels=3, hdim=channels, blocks=blocks,)
         self.distribution = T.distributions.normal.Normal(0, 1)
-        self.d_optim = optim.Adam(self.discriminator.parameters(), 1e-4, betas=(0.5, 0.9))
-        self.g_optim = optim.Adam(self.generator.parameters(), 1e-4, betas=(0.5, 0.9))
+        self.d_optim = optim.Adam(self.discriminator.parameters(), 1e-4, betas=(0.0, 0.9))
+        self.g_optim = optim.Adam(self.generator.parameters(), 1e-4, betas=(0.0, 0.9))
 
         self.zdim = zdim
 
