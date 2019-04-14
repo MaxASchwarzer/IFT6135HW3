@@ -97,7 +97,7 @@ def train(flags):
     if flags.load is not None:
         model = T.load(flags.load)
     else:
-        model = GAN(flags.zdim, flags.channels)
+        model = GAN(flags.zdim, flags.channels, blocks=[flags.blocks for i in range(5)])
     model = model.to(device)
 
     old_time = time.clock()
@@ -151,6 +151,7 @@ if __name__ == "__main__":
     parser.add_argument("--load", type=str, default=None, help="File to load model from.  Blank for none.")
     parser.add_argument("--save", type=str, default="wgan.pt", help="File to save model to.")
     parser.add_argument("--zdim", type=int, default=100, help="Dimension of latent")
+    parser.add_argument("--blocks", type=int, default=2, help="# of resblocks per pooling")
     parser.add_argument("--channels", type=int, default=8, help="Base # of channels in resnets.")
 
     flags = parser.parse_args()
