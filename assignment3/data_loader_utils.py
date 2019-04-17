@@ -316,7 +316,7 @@ if __name__ == '__main__' :
 	overwrite_npy(dataset_path = './')
 
 	# Create a dataset instance
-	binarized_mnist = BinarizedMNIST(	batch_size = 16, 
+	binarized_mnist = BinarizedMNIST(	batch_size = 1, 
 										dataset_path = './', 
 										is_load_from_npy = True, 
 										is_load_from_amat_files = False)
