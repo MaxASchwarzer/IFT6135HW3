@@ -494,10 +494,6 @@ class vaeModel(nn.Module) :
 			x_base = x[i]
 			x_batch = [x_base for _ in range(num_samples)]
 			x_batch = np.array(x_batch).astype(np.float32)
-
-			# Get the samples correctly
-			samples = z[i]
-
 			# Reshape to image
 			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
 			# Convert into a tensor
@@ -507,6 +503,12 @@ class vaeModel(nn.Module) :
 			# Load to device
 			if 'cuda' in self.device :
 				x = x_tensor.cuda()
+
+			# Get the samples correctly
+			samples = torch.Tensor(z[i])
+			# Load to device
+			if 'cuda' in self.device :
+				samples = samples.cuda()
 
 			# Set the optimizer gradient to 0
 			self.optimizer.zero_grad()
