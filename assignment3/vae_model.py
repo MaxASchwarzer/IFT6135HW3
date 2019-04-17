@@ -544,7 +544,7 @@ class vaeModel(nn.Module) :
 			log_p_x_array = log_p_z + log_p_x_given_z - log_q_z_given_x
 
 			# Compute the log p(x) with log-sum technique
-			log_p_x = -np.log(num_samples) + np.max(log_p_x_array) + np.log(np.sum(log_p_x_array - np.max(log_p_x_array)))
+			log_p_x = -np.log(num_samples) + np.max(log_p_x_array) + np.log(np.sum(np.exp(log_p_x_array - np.max(log_p_x_array))))
 			# Add to the list
 			log_p_x_list.append(log_p_x)
 
