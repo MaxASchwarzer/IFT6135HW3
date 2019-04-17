@@ -128,6 +128,10 @@ class VAE(nn.Module) :
 			The encoded torch tensor for the image batch. SHAPE : [<batch_size>, <latent_size = 100>]
 		"""
 
+		# BUG FIX! Tensors dropped from GPU are put back
+		if torch.cuda.is_available() :
+			inputs = inputs.cuda()
+
 		# Get inputs passed through the encoder
 		feats = self.encoder(inputs)
 		# Flatten the features
@@ -154,6 +158,10 @@ class VAE(nn.Module) :
 		log_var :
 			The log variances for the inputs as a torch tensor. SHAPE : [<batch_size>, <latent_size = 100>]
 		"""
+
+		# BUG FIX! Tensors dropped from GPU are put back
+		if torch.cuda.is_available() :
+			inputs = inputs.cuda()
 
 		# Get and return the mean and log-sigma
 		mean = self.reparametrizer_mu(inputs)
@@ -207,6 +215,10 @@ class VAE(nn.Module) :
 			The reconstructed images as torch tensor. SHAPE : [<batch_size>, <channel_out = 1/3>, <height>, <width>]
 		"""
 
+		# BUG FIX! Tensors dropped from GPU are put back
+		if torch.cuda.is_available() :
+			inputs = inputs.cuda()
+
 		# Pass the input through the linear layer
 		feats_linear = self.linear_out(inputs)
 		# Reshape into a feature
@@ -239,6 +251,10 @@ class VAE(nn.Module) :
 		log_var :
 			The log-variance of the latent variables as torch tensor. SHAPE : [<batch_size>, <latent_size = 100>]
 		"""
+
+		# BUG FIX! Tensors dropped from GPU are put back
+		if torch.cuda.is_available() :
+			inputs = inputs.cuda()
 
 		# Encode the inputs
 		encoded_feats = self.encode(inputs = inputs)
