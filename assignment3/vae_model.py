@@ -489,7 +489,7 @@ class vaeModel(nn.Module) :
 if __name__ == '__main__' :
 
 	# Create a dataset instance
-	data_loader = BinarizedMNIST(batch_size = 5000)
+	data_loader = BinarizedMNIST(batch_size = 32)
 
 	# Create a model
 	if torch.cuda.is_available() :
