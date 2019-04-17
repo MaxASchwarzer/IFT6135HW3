@@ -574,4 +574,5 @@ if __name__ == '__main__' :
 
 	# Test the model
 	x_valid, y_valid = vae_model.get_data_split('Valid')
-	vae_model.compute_log_likelihood(x = x_valid, z = np.random.random([x_valid.shape[0], 200, 100]))
+	log_p_x_np = vae_model.compute_log_likelihood(x = x_valid, z = np.random.random([x_valid.shape[0], 200, 100]))
+	print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
