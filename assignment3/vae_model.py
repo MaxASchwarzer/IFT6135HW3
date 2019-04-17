@@ -436,7 +436,7 @@ class vaeModel(nn.Module) :
 				x = x_tensor
 
 			# Get the samples correctly
-			samples = torch.Tensor(z[i])
+			samples = torch.Tensor(z_input[i])
 			# Load to device
 			if 'cuda' in self.device :
 				samples = samples.cuda()
