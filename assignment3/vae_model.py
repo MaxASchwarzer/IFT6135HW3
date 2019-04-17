@@ -420,6 +420,8 @@ class vaeModel(nn.Module) :
 		# For each data point
 		for i in range(batch_size) :
 
+			print('[INFO] Processing input data : ', i)
+
 			# Get the i-th datapoint in proper shape
 			x_base = x_input[i]
 			x_batch = np.array([x_base for _ in range(num_samples)]).astype(np.float32)
