@@ -482,9 +482,9 @@ class vaeModel(nn.Module) :
 		self.set_eval_mode()
 
 		# Extract info
-		batch_size = samples.shape[0]
-		num_samples = samples.shape[1]
-		latent_size = samples.shape[2]
+		batch_size = z.shape[0]
+		num_samples = z.shape[1]
+		latent_size = z.shape[2]
 
 		log_p_x_list = []
 		# For each data point
