@@ -383,6 +383,8 @@ if __name__ == '__main__' :
 	else :
 		device = 'cpu'
 	vae_model = vaeModel(data_loader = data_loader, device = device)
+	if 'cuda' in self.device :
+		vae_model = vae_model.cuda()
 
 	# Train the model
 	vae_model.train(num_epochs = 1)
