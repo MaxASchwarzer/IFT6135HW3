@@ -32,12 +32,20 @@ class vaeModel(nn.Module) :
 
 	methods :
 
-	__init__(self, data_loader, device, architecture = 'Standard')
+	__init__(self, data_loader, device, architecture = 'Standard') :
 		The constructor
 	set_train_mode(self) :
 		A method to set the model to training
 	set_eval_mode(self) :
 		A method to set the model to testing
+	evaluate_loss(self, x, x_reconstr, mean, log_var) :
+		A method to compute the loss of the architecture
+	save_model(self, model_path = './Models', model_name = 'EXPT') :
+		A method to save the model
+	load_model(self, model_path = './vae_models', model_name = 'EXPT') :
+		A function to load the model from a path
+	train(self, stopping_criterion = 'Epochs', num_epochs = 5000, is_store_early_models = True, model_path = './vae_models', model_name = 'EXPT', is_write_progress_to_log_file = True, log_file_path = 'EXPT.log', is_verbose = True) :
+		A method to train the model 
 	"""
 
 	# Constructor
@@ -275,8 +283,8 @@ class vaeModel(nn.Module) :
 				print('[INFO] Time per iteration : ', time_stop - time_start)
 
 			# Evaluate the model
-			val_loss = self.test(split = 'Valid')
-			te_loss = self.test(split = 'Test')
+			_, _, _, _, _, val_loss = self.test(split = 'Valid')
+			_, _, _, _, _, te_loss = self.test(split = 'Test')
 			if is_verbose :
 				print('[INFO] Epoch : ', trigger_stop_training, ' Iteration : ', iteration_count, ' Validation Loss : ', val_loss)
 				print('[INFO] Epoch : ', trigger_stop_training, ' Iteration : ', iteration_count, ' Testing Loss : ', te_loss)
