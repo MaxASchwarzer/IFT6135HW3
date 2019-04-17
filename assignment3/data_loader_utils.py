@@ -245,7 +245,7 @@ class BinarizedMNIST(object) :
 		else :
 			print('[ERROR] Wrong split is querried : ', str(split))
 			print('[ERROR] Terminating the code ...')
-			sys.exit(status)
+			sys.exit()
 
 		return x_batch, y_batch
 

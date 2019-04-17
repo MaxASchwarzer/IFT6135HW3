@@ -275,7 +275,7 @@ class vaeModel(nn.Module) :
 				print('[INFO] Time per iteration : ', time_stop - time_start)
 
 			# Evaluate the model
-			val_loss = self.test(split = 'Validation')
+			val_loss = self.test(split = 'Valid')
 			te_loss = self.test(split = 'Test')
 			if is_verbose :
 				print('[INFO] Epoch : ', trigger_stop_training, ' Iteration : ', iteration_count, ' Validation Loss : ', val_loss)
