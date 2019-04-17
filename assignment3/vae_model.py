@@ -376,7 +376,11 @@ if __name__ == '__main__' :
 	data_loader = BinarizedMNIST(batch_size = 1024)
 
 	# Create a model
-	vae_model = vaeModel(data_loader = data_loader, device = torch.device('cpu'))
+	if torch.cuda.is_available() :
+		device = torch.device('cuda')
+	else :
+		device = torch.device('cpu')
+	vae_model = vaeModel(data_loader = data_loader, device = device)
 
 	# Train the model
 	vae_model.train(num_epochs = 1)
