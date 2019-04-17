@@ -573,6 +573,6 @@ if __name__ == '__main__' :
 	vae_model.train(num_epochs = 1)
 
 	# Test the model
-	x_valid, y_valid = vae_model.get_data_split('Valid')
+	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
 	log_p_x_np = vae_model.compute_log_likelihood(x = x_valid, z = np.random.random([x_valid.shape[0], 200, 100]))
 	print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
