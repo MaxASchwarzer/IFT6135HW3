@@ -245,7 +245,8 @@ class vaeModel(nn.Module) :
 				# Make first dimension as channel
 				x_tensor = x_tensor.permute(0, 3, 1, 2)
 				# Load to device
-				x = x_tensor.to(self.device)
+				if 'cuda' in self.device :
+					x = x_tensor.cuda()
 
 				# Set the optimizer gradient to 0
 				self.optimizer.zero_grad()
@@ -346,7 +347,8 @@ class vaeModel(nn.Module) :
 		# Make first dimension as channel
 		x_tensor = x_tensor.permute(0, 3, 1, 2)
 		# Load to device
-		x = x_tensor.to(self.device)
+		if 'cuda' in self.device :
+			x = x_tensor.cuda()
 
 		# Set the optimizer gradient to 0
 		self.optimizer.zero_grad()
@@ -377,9 +379,9 @@ if __name__ == '__main__' :
 
 	# Create a model
 	if torch.cuda.is_available() :
-		device = torch.device('cuda')
+		device = 'cuda'
 	else :
-		device = torch.device('cpu')
+		device = 'cpu'
 	vae_model = vaeModel(data_loader = data_loader, device = device)
 
 	# Train the model
