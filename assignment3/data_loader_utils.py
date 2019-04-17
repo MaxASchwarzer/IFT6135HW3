@@ -312,8 +312,8 @@ class BinarizedMNIST(object) :
 # Pseudo-main
 if __name__ == '__main__' :
 
-	# # Create the .npy files
-	# overwrite_npy(dataset_path = './')
+	# Create the .npy files
+	overwrite_npy(dataset_path = './')
 
 	# Create a dataset instance
 	binarized_mnist = BinarizedMNIST(	batch_size = 16, 
