@@ -361,7 +361,7 @@ class vaeModel(nn.Module) :
 		# Get the numpy arrays corresponding to everything
 		reconstr_np = reconstr.cpu().data.numpy()
 		samples_np = samples.cpu().data.numpy()
-		noise_np = nosie.cpu().data.numpy()
+		noise_np = noise.cpu().data.numpy()
 		mean_np = mean.cpu().data.numpy()
 		log_var_np = log_var.cpu().data.numpy()
 		loss_np = loss.cpu().data.numpy()
