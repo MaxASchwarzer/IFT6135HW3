@@ -516,10 +516,10 @@ class vaeModel(nn.Module) :
 			# Encode and get mean/log-var
 			encoded_feats = self.model.encode(inputs = x)
 			# Get the means and log-variances
-			mean, log_var = self.reparametrize(inputs = encoded_feats)
+			mean, log_var = self.model.reparametrize(inputs = encoded_feats)
 
 			# Reconstruct
-			reconstr = self.decode(inputs = samples)
+			reconstr = self.model.decode(inputs = samples)
 
 			# Get the numpy arrays corresponding to everything
 			reconstr_np = reconstr.cpu().data.numpy()
