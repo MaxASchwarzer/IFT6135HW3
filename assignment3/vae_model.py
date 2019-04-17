@@ -391,85 +391,15 @@ class vaeModel(nn.Module) :
 		return reconstr_np, samples_np, noise_np, mean_np, log_var_np, loss_np
 
 
-	# Define a method to compute per test data point probability
-	def compute_test_point_prob(self, x_in, num_samples = 200) :
-
-		"""
-		inputs :
-
-		x_in :
-			The single input image. SHAPE : [<batch_size = 1>, <channel_in = 1>, <height = 28>, <width = 28>]
-		num_samples : 200
-			The number of samples used for Monte-Carlo estimation
-
-		outputs :
-
-		log_p_x :
-			The Monte-Carlo samples based estimate of log p(x) for the input batch x. SHAPE : [] (a scalar)
-		"""
-
-		# Set the mode to testing
-		self.set_eval_mode()
-
-		# Create num_samples many copies of the input x and feed into new np array
-		# x_base = x[0] # SHAPE : [<channel_in = 1>, <height = 28>, <width = 28>]
-		x_base = x_in # No need to worry about the dimensions. SHAPE : [<anything>]
-		x_batch = [x_base for _ in range(num_samples)]
-		x_batch = np.array(x_batch).astype(np.float32) # SHAPE : [<channel_in = 200>, <height = 28>, <width = 28>]
-
-		# Reshape to image
-		x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
-		# Convert into a tensor
-		x_tensor = torch.Tensor(x_batch)
-		# Make first dimension as channel
-		x_tensor = x_tensor.permute(0, 3, 1, 2)
-		# Load to device
-		if 'cuda' in self.device :
-			x = x_tensor.cuda()
-
-		# Set the optimizer gradient to 0
-		self.optimizer.zero_grad()
-
-		# Get the samples, noise, mean and log-variances from the forward pass of the VAE
-		reconstr, samples, noise, mean, log_var = self.model(inputs = x)
-		# Get the numpy arrays corresponding to everything
-		reconstr_np = reconstr.cpu().data.numpy()
-		samples_np = samples.cpu().data.numpy()
-		noise_np = noise.cpu().data.numpy()
-		mean_np = mean.cpu().data.numpy()
-		log_var_np = log_var.cpu().data.numpy()
-
-		# Compute the log p(z) term from the samples. Note that the constant vanishes with the denominator's constant. SHAPE : [<num_samples = 200>, 1]
-		log_p_z = - 0.5*np.sum((samples_np/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
-		assert(log_p_z.shape[0] == num_samples)
-		assert(log_p_z.shape[1] == 1)
-		# Compute the log p(x|z) term from the reconstruction and the original image. SHAPE : [<num_samples = 200>, 1]
-		log_p_x_given_z = np.sum(x_batch.reshape([-1, 28*28])*np.log(reconstr_np.reshape([-1, 28*28]) + 1e-9) + (1.0 - x_batch.reshape([-1, 28*28]))*np.log(1.0 - reconstr_np.reshape([-1, 28*28]) + 1e-9), axis = 1, keepdims = True)
-		assert(log_p_x_given_z.shape[0] == num_samples)
-		assert(log_p_x_given_z.shape[1] == 1)
-		# Compute the log q(z|x) term from the predicted mean and variance 
-		log_q_z_given_x = np.log(1.0/(np.prod(np.exp(0.5*log_var_np), axis = 1, keepdims = True))) - 0.5*np.sum(((samples_np - mean_np)/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
-		assert(log_q_z_given_x.shape[0] == num_samples)
-		assert(log_q_z_given_x.shape[1] == 1)
-
-		# Compute the log of each term
-		log_p_x_array = log_p_z + log_p_x_given_z - log_q_z_given_x
-
-		# Compute the log p(x) with log-sum technique
-		log_p_x = -np.log(num_samples) + np.max(log_p_x_array) + np.log(np.sum(log_p_x_array - np.max(log_p_x_array)))
-
-		return log_p_x
-
-
 	# Define a method to compute the log-likelihood for test points based on samples
-	def compute_log_likelihood(self, x, z) :
+	def compute_log_likelihood(self, x_input, z_input) :
 
 		"""
 		inputs :
 
-		x :
+		x_input :
 			A numpy array of input data. SHAPE : [<batch_size>, <any shape>]
-		z :
+		z_input :
 			The samples used to evaluate the log-likelihood for the points. SHAPE : [<batch_size>, <num_samples = 200>, <latent_size = 100>]
 
 		outputs :
@@ -482,18 +412,17 @@ class vaeModel(nn.Module) :
 		self.set_eval_mode()
 
 		# Extract info
-		batch_size = z.shape[0]
-		num_samples = z.shape[1]
-		latent_size = z.shape[2]
+		batch_size = z_input.shape[0]
+		num_samples = z_input.shape[1]
+		latent_size = z_input.shape[2]
 
 		log_p_x_list = []
 		# For each data point
 		for i in range(batch_size) :
 
 			# Get the i-th datapoint in proper shape
-			x_base = x[i]
-			x_batch = [x_base for _ in range(num_samples)]
-			x_batch = np.array(x_batch).astype(np.float32)
+			x_base = x_input[i]
+			x_batch = np.array([x_base for _ in range(num_samples)]).astype(np.float32)
 			# Reshape to image
 			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
 			# Convert into a tensor
@@ -503,6 +432,8 @@ class vaeModel(nn.Module) :
 			# Load to device
 			if 'cuda' in self.device :
 				x = x_tensor.cuda()
+			else :
+				x = x_tensor
 
 			# Get the samples correctly
 			samples = torch.Tensor(z[i])
@@ -558,7 +489,7 @@ class vaeModel(nn.Module) :
 if __name__ == '__main__' :
 
 	# Create a dataset instance
-	data_loader = BinarizedMNIST(batch_size = 32)
+	data_loader = BinarizedMNIST(batch_size = 5000)
 
 	# Create a model
 	if torch.cuda.is_available() :
@@ -574,5 +505,5 @@ if __name__ == '__main__' :
 
 	# Test the model
 	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
-	log_p_x_np = vae_model.compute_log_likelihood(x = x_valid, z = np.random.random([x_valid.shape[0], 200, 100]))
+	log_p_x_np = vae_model.compute_log_likelihood(x = x_valid, z = np.random.random([10000, 200, 100]))
 	print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
