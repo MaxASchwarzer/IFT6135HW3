@@ -243,10 +243,10 @@ class vaeModel(nn.Module) :
 				# Convert into a tensor
 				x_tensor = torch.Tensor(x_batch)
 				# Make first dimension as channel
-				x_tensor = x_tensor.permute(0, 3, 1, 2)
+				x = x_tensor.permute(0, 3, 1, 2)
 				# Load to device
 				if 'cuda' in self.device :
-					x = x_tensor.cuda()
+					x = x.cuda() 
 
 				# Set the optimizer gradient to 0
 				self.optimizer.zero_grad()
