@@ -515,10 +515,10 @@ class vaeModel(nn.Module) :
 
 			x_np = x.cpu().data.numpy()
 
-			# Assert
-			for aux in range(num_samples) :
-				assert(np.all(mean_np[0] == mean_np[aux]))
-				assert(np.all(log_var_np[0] == log_var_np[aux]))
+			# # Assert
+			# for aux in range(num_samples) :
+			# 	assert(np.all(mean_np[0] == mean_np[aux]))
+			# 	assert(np.all(log_var_np[0] == log_var_np[aux]))
 
 			# Compute the log p(z) term from the samples. Note that the constant vanishes with the denominator's constant. SHAPE : [<num_samples = 200>, 1]
 			log_p_z = multivariate_normal.logpdf(x = samples_np, mean = np.zeros([latent_size,]), cov = np.eye(latent_size)).reshape([num_samples, 1])
