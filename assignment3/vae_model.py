@@ -477,7 +477,7 @@ class vaeModel(nn.Module) :
 
 			# Get the i-th datapoint in proper shape
 			x_base = x_input[i]
-			x_batch = np.array([x_base for _ in range(num_samples)]).astype(np.float32)
+			x_batch = np.array([x_base for _ in range(1)]).astype(np.float32) # No need to perform multiple things now
 			# Reshape to image
 			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
 			# Convert into a tensor
