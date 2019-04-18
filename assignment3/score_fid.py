@@ -4,6 +4,7 @@ import torchvision
 import torchvision.transforms as transforms
 import torch
 import classify_svhn
+import numpy as np
 from classify_svhn import Classifier
 
 SVHN_PATH = "svhn"
@@ -75,10 +76,15 @@ def calculate_fid_score(sample_feature_iterator,
     """
     To be implemented by you!
     """
-    raise NotImplementedError(
-        "TO BE IMPLEMENTED."
-        "Part of Assignment 3 Quantitative Evaluations"
-    )
+    sample_cov = np.cov(sample_feature_iterator, rowvar=False)
+    test_cov = np.cov(testset_feature_iterator, rowvar=False)
+
+    sample_mean = np.mean(sample_feature_iterator, axis=1)
+    test_mean = np.mean(testset_feature_iterator, axis=1)
+
+    fid = np.linalg.norm(sample_mean - test_mean) + np.trace(sample_cov + test_cov - 2*(sample_cov @ test_cov) ** 0.5)
+
+    return fid
 
 
 if __name__ == "__main__":
