@@ -6,6 +6,7 @@ from torch.autograd import Variable
 from torch.nn import functional as fn
 
 import numpy as np
+from scipy.stats import multivariate_normal
 
 import sys
 import time
@@ -514,16 +515,25 @@ class vaeModel(nn.Module) :
 
 			x_np = x.cpu().data.numpy()
 
+			# Assert
+			for aux in range(num_samples) :
+				assert(mean_np[0] == mean_np[aux])
+				assert(log_var_np[0] == log_var_np[aux])
+
 			# Compute the log p(z) term from the samples. Note that the constant vanishes with the denominator's constant. SHAPE : [<num_samples = 200>, 1]
-			log_p_z = - 0.5*np.sum((samples_np/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
+			log_p_z = multivariate_normal.logpdf(x = samples_np, mean = np.zeros([latent_size,]), cov = np.eye(latent_size)).reshape([num_samples, 1])
+			# log_p_z = - 0.5*np.sum((samples_np/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
 			assert(log_p_z.shape[0] == num_samples)
 			assert(log_p_z.shape[1] == 1)
+
 			# Compute the log p(x|z) term from the reconstruction and the original image. SHAPE : [<num_samples = 200>, 1]
 			log_p_x_given_z = np.sum(x_np.reshape([-1, 28*28])*np.log(reconstr_np.reshape([-1, 28*28]) + 1e-9) + (1.0 - x_np.reshape([-1, 28*28]))*np.log(1.0 - reconstr_np.reshape([-1, 28*28]) + 1e-9), axis = 1, keepdims = True)
 			assert(log_p_x_given_z.shape[0] == num_samples)
 			assert(log_p_x_given_z.shape[1] == 1)
+			
 			# Compute the log q(z|x) term from the predicted mean and variance 
-			log_q_z_given_x = np.log(1.0/(np.prod(np.exp(0.5*log_var_np), axis = 1, keepdims = True))) - 0.5*np.sum(((samples_np - mean_np)/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
+			log_q_z_given_x = multivariate_normal.logpdf(x = samples_np, mean = mean_np[i], cov = np.diag(np.exp(log_var_np[i]))).reshape([num_samples, 1])
+			# log_q_z_given_x = np.log(1.0/(np.prod(np.exp(0.5*log_var_np), axis = 1, keepdims = True))) - 0.5*np.sum(((samples_np - mean_np)/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
 			assert(log_q_z_given_x.shape[0] == num_samples)
 			assert(log_q_z_given_x.shape[1] == 1)
 
