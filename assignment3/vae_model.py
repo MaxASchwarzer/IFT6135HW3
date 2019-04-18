@@ -512,12 +512,14 @@ class vaeModel(nn.Module) :
 			mean_np = mean.cpu().data.numpy()
 			log_var_np = log_var.cpu().data.numpy()
 
+			x_np = x.cpu().data.numpy()
+
 			# Compute the log p(z) term from the samples. Note that the constant vanishes with the denominator's constant. SHAPE : [<num_samples = 200>, 1]
 			log_p_z = - 0.5*np.sum((samples_np/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
 			assert(log_p_z.shape[0] == num_samples)
 			assert(log_p_z.shape[1] == 1)
 			# Compute the log p(x|z) term from the reconstruction and the original image. SHAPE : [<num_samples = 200>, 1]
-			log_p_x_given_z = np.sum(x_batch.reshape([-1, 28*28])*np.log(reconstr_np.reshape([-1, 28*28]) + 1e-9) + (1.0 - x_batch.reshape([-1, 28*28]))*np.log(1.0 - reconstr_np.reshape([-1, 28*28]) + 1e-9), axis = 1, keepdims = True)
+			log_p_x_given_z = np.sum(x_np.reshape([-1, 28*28])*np.log(reconstr_np.reshape([-1, 28*28]) + 1e-9) + (1.0 - x_np.reshape([-1, 28*28]))*np.log(1.0 - reconstr_np.reshape([-1, 28*28]) + 1e-9), axis = 1, keepdims = True)
 			assert(log_p_x_given_z.shape[0] == num_samples)
 			assert(log_p_x_given_z.shape[1] == 1)
 			# Compute the log q(z|x) term from the predicted mean and variance 
@@ -554,10 +556,10 @@ if __name__ == '__main__' :
 	if 'cuda' in device :
 		vae_model = vae_model.cuda()
 
-	# vae_model.load_model()
+	vae_model.load_model()
 
-	# Train the model
-	vae_model.train(num_epochs = 20)
+	# # Train the model
+	# vae_model.train(num_epochs = 20)
 
 	# Test the model
 	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
