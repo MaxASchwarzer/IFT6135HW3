@@ -391,6 +391,58 @@ class vaeModel(nn.Module) :
 		return reconstr_np, samples_np, noise_np, mean_np, log_var_np, loss_np
 
 
+	# Define a method to sample a given number of z from q(z|x)
+	def sample_z(self, x_input, num_samples = 200) :
+
+		# Set the mode to testing
+		self.set_eval_mode()
+
+		# Create a list of all samples
+		samples_array = []
+
+		# Get batch size
+		batch_size = x_input.shape[0]
+
+		for i in range(batch_size) :
+
+			print('[INFO] Generating samples for data : ', i)
+
+			# Create tensor of input repeated num_samples times
+			x_base = x_input[i]
+			x_batch = np.array([x_base for _ in range(num_samples)]).astype(np.float32)
+			# Reshape to image
+			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
+			# Convert into a tensor
+			x_tensor = torch.Tensor(x_batch)
+			# Make first dimension as channel
+			x_tensor = x_tensor.permute(0, 3, 1, 2)
+			# Load to device
+			if 'cuda' in self.device :
+				x = x_tensor.cuda()
+			else :
+				x = x_tensor
+
+			# Set the optimizer gradient to 0
+			self.optimizer.zero_grad()
+
+			# Encode and get mean/log-var
+			encoded_feats = self.model.encode(inputs = x)
+			# Get the means and log-variances
+			mean, log_var = self.model.reparametrize(inputs = encoded_feats)
+			# Sample from the means and log-variance
+			samples, noise = self.model.sample(mean = mean, log_var = log_var)
+
+			# Get samples in numpy
+			samples_np = samples.cpu().data.numpy()
+
+			samples_array.append(samples_np)
+
+		# Convert the entire array into numpy 
+		samples_array_np = np.array(samples_array).astype(np.float32)
+
+		return samples_array_np
+
+
 	# Define a method to compute the log-likelihood for test points based on samples
 	def compute_log_likelihood(self, x_input, z_input) :
 
@@ -502,10 +554,13 @@ if __name__ == '__main__' :
 	if 'cuda' in device :
 		vae_model = vae_model.cuda()
 
-	# Train the model
-	vae_model.train(num_epochs = 20)
+	vae_model.load_model()
+
+	# # Train the model
+	# vae_model.train(num_epochs = 20)
 
 	# Test the model
 	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
-	log_p_x_np = vae_model.compute_log_likelihood(x_input = x_valid, z_input = np.random.random([10000, 200, 100]))
+	samples_valid = vae_model.sample_z(x_input = x_valid, num_samples = 200)
+	log_p_x_np = vae_model.compute_log_likelihood(x_input = x_valid, z_input = samples_valid)
 	print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
