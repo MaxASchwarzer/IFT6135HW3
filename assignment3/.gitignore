@@ -1,2 +1,3 @@
 *.amat
 *.npy
+vae_models
