@@ -473,8 +473,6 @@ class vaeModel(nn.Module) :
 		# For each data point
 		for i in range(batch_size) :
 
-			print('[INFO] Processing input data : ', i)
-
 			# Get the i-th datapoint in proper shape
 			x_base = x_input[i]
 			x_batch = np.array([x_base for _ in range(1)]).astype(np.float32) # No need to perform multiple things now
@@ -544,6 +542,8 @@ class vaeModel(nn.Module) :
 			log_p_x = -np.log(num_samples) + np.max(log_p_x_array) + np.log(np.sum(np.exp(log_p_x_array - np.max(log_p_x_array))))
 			# Add to the list
 			log_p_x_list.append(log_p_x)
+
+			print('[INFO] Processing input data : ', i, ' Log-likelihood : ', log_p_x)
 
 		# Convert to numpy array
 		log_p_x_np = np.array(log_p_x_list).astype(np.float32).reshape([-1,])
