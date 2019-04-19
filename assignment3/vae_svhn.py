@@ -8,7 +8,10 @@ import numpy as np
 
 import sys
 
-from vae_utils import Generator, ConvDiscriminator
+from vae_utils import Generator
+from vae_utils import ConvDiscriminator
+from vae_utils import encoderConfig
+from vae_utils import decoderConfig
 
 
 # Define a class to hold the convolutional VAE architecture
@@ -27,14 +30,10 @@ class vaeSVHN(nn.Module) :
 		The network modeling q(z|x), the distribution of the latent variable given the data
 	decoder :
 		The network modeling p(x|z), the distribution of the data given the latent variable
-	linear_in :
-		The network modeling the linear layer before implementing reparametrization trick
 	reparam_mu :
 		The network of predicting mu(x) [mean] for given input x, for implementing reparametrization trick
 	reparam_log_var :
 		The network of predicting log_var(x) [log of variance] for given input x, for implementing reparametrization trick
-	linear_out :
-		The network modeling the linear layer after implementing reparametrization trick
 
 
 	methods :
@@ -73,7 +72,7 @@ class vaeSVHN(nn.Module) :
 		"""
 
 		# Initialize the super class
-		super(VAE, self).__init__()
+		super(vaeSVHN, self).__init__()
 
 		# Create attributes
 		self.device = device
@@ -82,17 +81,14 @@ class vaeSVHN(nn.Module) :
 		# Create the encoder
 		if self.architecture == 'Standard' :	
 			# Define the latent size attribute
-			self.latent_size = conf.latent_size
+			self.latent_size = config_dec.zdim
 			# Create the sequential encoder model with the given specifications
 			self.encoder = ConvDiscriminator(	hdim = config_enc.hdim, 
 												im_channels = config_enc.im_channels, 
 												blocks = config_enc.blocks)
 
 			# Create the sequential decoder model with the given specifications
-			self.decoder = Generator(	zdim = config_dec.zdim, 
-										hdim = config_dec.hdim, 
-										im_channels = config_dec.im_channels, 
-										blocks = config_dec.blocks, dropout=0.5)
+			self.decoder = Generator(	zdim = config_dec.zdim, hdim = config_dec.hdim, im_channels = config_dec.im_channels, blocks = config_dec.blocks, dropout = config_dec.dropout)
 			# Create the sequential reparametrizer model with the given specifications
 			self.reparametrizer_mu = nn.Sequential(nn.Linear(in_features = 100, out_features = 100))
 			self.reparametrizer_log_var = nn.Sequential(nn.Linear(in_features = 100, out_features = 100))
@@ -123,11 +119,7 @@ class vaeSVHN(nn.Module) :
 			inputs = inputs.cuda()
 
 		# Get inputs passed through the encoder
-		feats = self.encoder(inputs)
-		# Flatten the features
-		feats_flatten = feats.view(feats.shape[0], -1)
-		# Pass the features through the input linear layer before reparametrization
-		outputs = self.linear_in(feats_flatten)
+		outputs = self.encoder(inputs)
 
 		return outputs
 
@@ -209,12 +201,8 @@ class vaeSVHN(nn.Module) :
 		if torch.cuda.is_available() :
 			inputs = inputs.cuda()
 
-		# Pass the input through the linear layer
-		feats_linear = self.linear_out(inputs)
-		# Reshape into a feature
-		feats = feats_linear.view(feats_linear.shape[0], 256, 1, -1)
 		# Decode the features through the decoder
-		reconstr = self.decoder(feats)
+		reconstr = self.decoder(inputs)
 
 		return reconstr
 
@@ -261,14 +249,22 @@ class vaeSVHN(nn.Module) :
 # Pseudo-main
 if __name__ == '__main__' :
 
-	vae = VAE(device = torch.device('cpu'))
-
 	# Create a pseudo-batch
 	batch_size = 512
-	height = 28
-	width = 28
-	channel_in = 1
-	x_batch = torch.Tensor(512, 1, 28, 28).normal_()
+	height = 32
+	width = 32
+	im_channels = 3
+	blocks = (1, 1, 1)
+	channel_dec = 32
+	channel_enc = 32
+	zdim = 100
+	x_batch = torch.Tensor(512, 3, 32, 32).normal_()
+
+	# Create encoder configurations
+	config_enc = encoderConfig(hdim = channel_enc, im_channels = im_channels, blocks = blocks)
+	config_dec = decoderConfig(zdim = 100, hdim = channel_dec*2**(len(blocks) - 1), im_channels = im_channels, blocks = blocks, dropout = 0.2)
+
+	vae = vaeSVHN(config_enc = config_enc, config_dec = config_dec, device = 'cpu')
 
 	# Get encoding
 	x_enc = vae.encode(inputs = x_batch)

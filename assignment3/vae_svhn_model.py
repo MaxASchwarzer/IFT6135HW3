@@ -12,7 +12,7 @@ import sys
 import time
 import os
 
-from vae import VAE
+from vae_svhn import vaeSVHN
 from data_loader_utils import BinarizedMNIST
 
 
@@ -151,12 +151,12 @@ class vaeModel(nn.Module) :
 
 
 	# Define a method to save the model
-	def save_model(self, model_path = './vae_models', model_name = 'EXPT') :
+	def save_model(self, model_path = './vae_svhn_models', model_name = 'EXPT') :
 
 		"""
 		inputs :
 
-		model_path : './vae_models'
+		model_path : './vae_svhn_models'
 			The path to which the model needs to be saved
 		model_name : 'EXPT'
 			The name of the experiment
@@ -172,12 +172,12 @@ class vaeModel(nn.Module) :
 
 
 	# Define a function to load the model from a path
-	def load_model(self, model_path = './vae_models', model_name = 'EXPT') :
+	def load_model(self, model_path = './vae_svhn_models', model_name = 'EXPT') :
 
 		"""
 		inputs :
 
-		model_path : './vae_models'
+		model_path : './vae_svhn_models'
 			The path to which the model needs to be saved
 		model_name : 'EXPT'
 			The name of the experiment
