@@ -67,6 +67,7 @@ class TestDataset(Dataset):
         """
         self.test_mat = sio.loadmat(mat_file_loc)
         self.data = self.test_mat["X"]
+        self.label = self.train_mat["y"]
         # self.data = np.transpose(self.test_mat["X"], (3, 2, 0, 1))
         self.transform = transform
 
@@ -74,7 +75,7 @@ class TestDataset(Dataset):
         return self.data.shape[0]
 
     def __getitem__(self, idx):
-        return self.transform(self.data[idx])
+        return self.transform(self.data[idx]), self.label[idx]
 
 
 class TrainDataset(Dataset):
@@ -99,7 +100,8 @@ class TrainDataset(Dataset):
         return self.data.shape[0]
 
     def __getitem__(self, idx):
-        return {"data": self.transform(self.data[idx]), "label": self.label[idx]}
+        # return {"data": self.transform(self.data[idx]), "label": self.label[idx]}
+        return self.transform(self.data[idx]), self.label[idx]
 
 
 class ValidDataset(Dataset):
@@ -124,7 +126,8 @@ class ValidDataset(Dataset):
         return self.data.shape[0]
 
     def __getitem__(self, idx):
-        return {"data": self.transform(self.data[idx]), "label": self.label[idx]}
+        # return {"data": self.transform(self.data[idx]), "label": self.label[idx]}
+        return self.transform(self.data[idx]), self.label[idx]
 
 
 # Run sanitization only once
