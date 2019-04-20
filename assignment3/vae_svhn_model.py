@@ -247,13 +247,13 @@ class vaeSVHNModel(nn.Module) :
 			threshold_stop_training = num_epochs
 			trigger_stop_training = 0
 
-		# Set the model mode to training
-		self.set_train_mode()
-
 		# While to continue training ...
 		while is_continue_training :
 
 			iteration_count = 0
+
+			# Set the model mode to training
+			self.set_train_mode()
 
 			# While there is a new training batch
 			for batch_id, (x, y) in enumerate(self.train_data_loader) :
