@@ -580,7 +580,9 @@ if __name__ == '__main__' :
 	zdim = 100
 
 	# Load the basic data splits
-	train_data_loader, valid_data_loader, test_data_loader = get_standard_data_loaders(train_batch_size = 64)
+	train_data_loader, valid_data_loader, test_data_loader = get_standard_data_loaders(	train_batch_size = 64,
+																						valid_batch_size = 1000, 
+																						test_batch_size = 1000)
 	data_loader_dict = {	'train' : train_data_loader,
 							'valid' : valid_data_loader,
 							'test' : test_data_loader }
