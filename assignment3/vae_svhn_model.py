@@ -207,7 +207,7 @@ class vaeSVHNModel(nn.Module) :
 
 
 	# Define a method to train the model 
-	def train(self, stopping_criterion = 'Epochs', num_epochs = 5000, is_store_early_models = True, model_path = './vae_models', model_name = 'EXPT', is_write_progress_to_log_file = True, log_file_path = 'EXPT_SVHN.log', is_verbose = True) :
+	def train(self, stopping_criterion = 'Epochs', num_epochs = 5000, is_store_early_models = True, model_path = './vae_svhn_models', model_name = 'EXPT', is_write_progress_to_log_file = True, log_file_path = 'EXPT_SVHN.log', is_verbose = True) :
 
 		"""
 		inputs :
