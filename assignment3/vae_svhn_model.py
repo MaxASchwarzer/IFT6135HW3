@@ -603,7 +603,7 @@ if __name__ == '__main__' :
 	# vae_model.load_model()
 
 	# Train the model
-	vae_model.train(num_epochs = 20)
+	vae_model.train(num_epochs = 30)
 
 	# # Test the model
 	# x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
