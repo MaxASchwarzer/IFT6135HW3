@@ -1,3 +1,6 @@
 *.amat
 *.npy
 vae_models
+svhn_dataset
+Print_Updating_Info.py
+Display_Custom_Plots.py

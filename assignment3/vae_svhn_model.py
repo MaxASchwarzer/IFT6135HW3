@@ -1,5 +1,6 @@
 # Dependencies
 import torch
+import torchvision
 from torch import nn
 from torch import optim
 from torch.autograd import Variable
@@ -558,8 +559,9 @@ class vaeModel(nn.Module) :
 # Pseudo-main
 if __name__ == '__main__' :
 
-	# Create a dataset instance
-	data_loader = BinarizedMNIST(batch_size = 32)
+	# Create a SVHN dataset instance
+	transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
+	
 
 	# Create a model
 	if torch.cuda.is_available() :
