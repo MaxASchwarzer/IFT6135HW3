@@ -227,9 +227,9 @@ class Generator(nn.Module):
 		for nblocks in blocks:
 			for block in range(nblocks):
 				if new_dim != current_dim:
-					self.blocks.append(ResBlock(current_dim, new_dim, stride=-2, dropout=dropout, bn=False, sn=False, h=h))
+					self.blocks.append(ResBlock(current_dim, new_dim, stride=-2, dropout=dropout, bn=True, sn=False, h=h))
 					current_dim = new_dim
-				self.blocks.append(ResBlock(current_dim, current_dim, stride=1, dropout=dropout, bn=False, sn=False, h=h))
+				self.blocks.append(ResBlock(current_dim, current_dim, stride=1, dropout=dropout, bn=True, sn=False, h=h))
 			# new_dim = int(current_dim/2)
 			new_dim = current_dim//2
 			h *= 2
@@ -263,9 +263,9 @@ class ConvDiscriminator(nn.Module):
 		for nblocks in blocks:
 			for block in range(nblocks):
 				if new_dim != current_dim:
-					self.blocks.append(ResBlock(current_dim, new_dim, stride=2, dropout=dropout, ln=False, bn = False, sn=False, h=h))
+					self.blocks.append(ResBlock(current_dim, new_dim, stride=2, dropout=dropout, ln=False, bn = True, sn=False, h=h))
 					current_dim = new_dim
-				self.blocks.append(ResBlock(current_dim, current_dim, stride=1, dropout=dropout, ln=False, bn = False, sn=False, h=h))
+				self.blocks.append(ResBlock(current_dim, current_dim, stride=1, dropout=dropout, ln=False, bn = True, sn=False, h=h))
 			new_dim = current_dim*2
 			# h = int(h/2)
 			h = h//2
