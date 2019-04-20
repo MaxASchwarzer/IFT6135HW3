@@ -232,15 +232,15 @@ class vaeModel(nn.Module) :
 			threshold_stop_training = num_epochs
 			trigger_stop_training = 0
 
-		# Set the model mode to training
-		self.set_train_mode()
-
 		# While to continue training ...
 		while is_continue_training :
 
 			iteration_count = 0
 			# For each epoch, reset the train split
 			self.data_loader.reset_data_split(split = 'Train')
+
+			# Set the model mode to training
+			self.set_train_mode()
 
 			# While there is a new training batch
 			while self.data_loader.is_next_batch_exists(split = 'Train') :
