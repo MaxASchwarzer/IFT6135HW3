@@ -208,7 +208,7 @@ class ResBlock(nn.Module):
 
 		output = x2 + x
 
-		print('[DEBUG][forward:ResBlock] Forward output shape : ', output.shape)
+		# print('[DEBUG][forward:ResBlock] Forward output shape : ', output.shape)
 		return output
 
 
@@ -245,7 +245,7 @@ class Generator(nn.Module):
 			current = block(current)
 
 		output = T.sigmoid(self.final(current))
-		print('[DEBUG][forward:Generator] Forward output shape : ', output.shape)
+		# print('[DEBUG][forward:Generator] Forward output shape : ', output.shape)
 		return output
 
 
@@ -281,13 +281,13 @@ class ConvDiscriminator(nn.Module):
 		for block in self.blocks:
 			current = block(current)
 
-		print('[DEBUG][forward:ConvDiscriminator] Current shape : ', current.shape)		
+		# print('[DEBUG][forward:ConvDiscriminator] Current shape : ', current.shape)		
 		current = self.fc1(current.flatten(1, -1))
 		current = self.ln1(current)
 		current = self.relu(current)
 		output = self.fc2(current)
 
-		print('[DEBUG][forward:ConvDiscriminator] Forward output shape : ', output.shape)
+		# print('[DEBUG][forward:ConvDiscriminator] Forward output shape : ', output.shape)
 
 		return output
 

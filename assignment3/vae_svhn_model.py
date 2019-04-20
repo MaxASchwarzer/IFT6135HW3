@@ -14,17 +14,22 @@ import time
 import os
 
 from vae_svhn import vaeSVHN
-from data_loader_utils import BinarizedMNIST
+from svhn_loader import get_standard_data_loaders
+from vae_utils import encoderConfig, decoderConfig
 
 
 # Define a class to hold the entire VAE as a model, on which training procedure can be defined
-class vaeModel(nn.Module) :
+class vaeSVHNModel(nn.Module) :
 
 	"""
 	attributes :
 
-	data_loader :
-		A standard data loader instance which has the standard methods
+	train_data_loader :
+		The pytorch data loaders for the train split
+	valid_data_loader :
+		The pytorch data loaders for the valid split
+	test_data_loader :
+		The pytorch data loaders for the test split
 	device :
 		The torch.device instance telling the device on which the tensors should be loaded
 	architecture : 'Standard'
@@ -57,13 +62,17 @@ class vaeModel(nn.Module) :
 	"""
 
 	# Constructor
-	def __init__(self, data_loader, device, architecture = 'Standard') :
+	def __init__(self, data_loaders, config_enc, config_dec, device, architecture = 'Standard') :
 
 		"""
 		inputs :
 		
-		data_loader :
-			A standard data loader instance which has the standard methods
+		data_loaders :
+			A standard data loader dictionary, which has the pytorch data loaders for all data splits. KEYS : 'train', 'valid', 'test'
+		config_enc :
+			The encoder information class, which can be accessed as done in vaeSVHN
+		config_dec :
+			The decoder information class, which can be accessed as done in vaeSVHN
 		device :
 			The torch.device instance telling the device on which the tensors should be loaded
 		architecture : 'Standard'
@@ -73,15 +82,19 @@ class vaeModel(nn.Module) :
 		"""
 
 		# Initialize the super class
-		super(vaeModel, self).__init__()
+		super(vaeSVHNModel, self).__init__()
 
 		# Create attributes
-		self.data_loader = data_loader
+		self.train_data_loader = data_loaders['train']
+		self.valid_data_loader = data_loaders['valid']
+		self.test_data_loader = data_loaders['test']
+
 		self.device = device
 		self.architecture = architecture
 
 		# Create a VAE instance
-		self.model = VAE(device = self.device, architecture = self.architecture)
+		self.model = vaeSVHN(	config_enc = config_enc, config_dec = config_dec, 
+								device = self.device, architecture = self.architecture)
 
 		# Create the optimizer
 		if self.architecture == 'Standard' :
@@ -140,7 +153,7 @@ class vaeModel(nn.Module) :
 		"""
 
 		# Compute binary cross-entropy
-		binary_cross_entropy_loss = fn.binary_cross_entropy(input = x_reconstr.view(-1, 784), target = x.view(-1, 784), reduction = 'sum') 
+		binary_cross_entropy_loss = fn.binary_cross_entropy(input = x_reconstr.view(-1, 32*32*3), target = x.view(-1, 32*32*3), reduction = 'sum') 
 		# print('[DEBUG] BCE Loss Shape : ', binary_cross_entropy_loss.shape)
 		# Compute KL-divergence
 		kl_loss = -0.5*torch.sum(1.0 + log_var - mean.pow(2) - log_var.exp())
@@ -193,7 +206,7 @@ class vaeModel(nn.Module) :
 
 
 	# Define a method to train the model 
-	def train(self, stopping_criterion = 'Epochs', num_epochs = 5000, is_store_early_models = True, model_path = './vae_models', model_name = 'EXPT', is_write_progress_to_log_file = True, log_file_path = 'EXPT.log', is_verbose = True) :
+	def train(self, stopping_criterion = 'Epochs', num_epochs = 5000, is_store_early_models = True, model_path = './vae_models', model_name = 'EXPT', is_write_progress_to_log_file = True, log_file_path = 'EXPT_SVHN.log', is_verbose = True) :
 
 		"""
 		inputs :
@@ -210,7 +223,7 @@ class vaeModel(nn.Module) :
 			The name of the experiment
 		is_write_progress_to_log_file : True
 			Whether to write the progress to a log file
-		log_file_path : 'EXPT.log'
+		log_file_path : 'EXPT_SVHN.log'
 			The path to the log-file where progress needs to be written
 		is_verbose : True
 			Whether to display the information
@@ -240,11 +253,9 @@ class vaeModel(nn.Module) :
 		while is_continue_training :
 
 			iteration_count = 0
-			# For each epoch, reset the train split
-			self.data_loader.reset_data_split(split = 'Train')
 
 			# While there is a new training batch
-			while self.data_loader.is_next_batch_exists(split = 'Train') :
+			for batch_id, (x, y) in enumerate(self.train_data_loader) :
 
 				# Start the timer
 				time_start = time.time()
@@ -252,14 +263,6 @@ class vaeModel(nn.Module) :
 				# Update iteration counter
 				iteration_count += 1
 
-				# Load a batch
-				x_batch, y_batch = self.data_loader.get_next_batch(split = 'Train')
-				# Reshape to image
-				x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
-				# Convert into a tensor
-				x_tensor = torch.Tensor(x_batch)
-				# Make first dimension as channel
-				x = x_tensor.permute(0, 3, 1, 2)
 				# Load to device
 				if 'cuda' in self.device :
 					x = x.cuda() 
@@ -357,24 +360,32 @@ class vaeModel(nn.Module) :
 		self.set_eval_mode()
 
 		if split != 'None' :
-			# Load the data split
-			x_batch, y_batch = self.data_loader.get_data_split(split = split)
+			if split == 'valid' :
+				for batch_id, (x_valid, y_valid) in enumerate(self.valid_data_loader) :
+					x = x_valid
+					y = y_valid
+					break
+			elif split == 'test' :
+				for batch_id, (x_valid, y_valid) in enumerate(self.valid_data_loader) :
+					x = x_valid
+					y = y_valid
+					break
+			else :
+				print('[ERROR] Unimplemented split : ', split, ' is querried.')
+				print('[ERROR] Terminating the code ...')
+				sys.exit()
+
 		elif split == 'None' :
 			# Load the default input
-			x_batch = np.array(x_default).astype(np.float32)
+			x = x_default
 		else :
 			print('[ERROR] Unimplemented split : ', split, ' is querried.')
 			print('[ERROR] Terminating the code ...')
 			sys.exit()
-		# Reshape to image
-		x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
-		# Convert into a tensor
-		x_tensor = torch.Tensor(x_batch)
-		# Make first dimension as channel
-		x_tensor = x_tensor.permute(0, 3, 1, 2)
+
 		# Load to device
 		if 'cuda' in self.device :
-			x = x_tensor.cuda()
+			x = x.cuda()
 
 		# Set the optimizer gradient to 0
 		self.optimizer.zero_grad()
@@ -400,6 +411,10 @@ class vaeModel(nn.Module) :
 	# Define a method to sample a given number of z from q(z|x)
 	def sample_z(self, x_input, num_samples = 200) :
 
+		"""
+		x_input should be a torch tensor
+		"""
+
 		# Set the mode to testing
 		self.set_eval_mode()
 
@@ -414,14 +429,10 @@ class vaeModel(nn.Module) :
 			print('[INFO] Generating samples for data : ', i)
 
 			# Create tensor of input repeated num_samples times
-			x_base = x_input[i]
+			x_base = x_input[i].cpu().data.numpy()
 			x_batch = np.array([x_base for _ in range(num_samples)]).astype(np.float32)
-			# Reshape to image
-			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
 			# Convert into a tensor
 			x_tensor = torch.Tensor(x_batch)
-			# Make first dimension as channel
-			x_tensor = x_tensor.permute(0, 3, 1, 2)
 			# Load to device
 			if 'cuda' in self.device :
 				x = x_tensor.cuda()
@@ -559,26 +570,43 @@ class vaeModel(nn.Module) :
 # Pseudo-main
 if __name__ == '__main__' :
 
-	# Create a SVHN dataset instance
-	transform = torchvision.transforms.Compose([torchvision.transforms.ToTensor()])
-	
+	# Parameters
+	height = 32
+	width = 32
+	im_channels = 3
+	blocks = (1, 1, 1)
+	channel_dec = 32
+	channel_enc = 32
+	zdim = 100
 
-	# Create a model
+	# Load the basic data splits
+	train_data_loader, valid_data_loader, test_data_loader = get_standard_data_loaders(train_batch_size = 64)
+	data_loader_dict = {	'train' : train_data_loader,
+							'valid' : valid_data_loader,
+							'test' : test_data_loader }
+	
+	# Create the device
 	if torch.cuda.is_available() :
 		device = 'cuda'
 	else :
 		device = 'cpu'
-	vae_model = vaeModel(data_loader = data_loader, device = device)
+	
+	config_enc = encoderConfig(hdim = channel_enc, im_channels = im_channels, blocks = blocks)
+	config_dec = decoderConfig(zdim = 100, hdim = channel_dec*2**(len(blocks) - 1), im_channels = im_channels, blocks = blocks, dropout = 0.2)
+	
+	vae_model = vaeSVHNModel(	data_loaders = data_loader_dict, config_enc = config_enc, 
+								config_dec = config_dec, device = device)
+
 	if 'cuda' in device :
 		vae_model = vae_model.cuda()
 
-	vae_model.load_model()
+	# vae_model.load_model()
 
-	# # Train the model
-	# vae_model.train(num_epochs = 20)
+	# Train the model
+	vae_model.train(num_epochs = 20)
 
-	# Test the model
-	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
-	samples_valid = vae_model.sample_z(x_input = x_valid, num_samples = 200)
-	log_p_x_np = vae_model.compute_log_likelihood(x_input = x_valid, z_input = samples_valid)
-	print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
+	# # Test the model
+	# x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
+	# samples_valid = vae_model.sample_z(x_input = x_valid, num_samples = 200)
+	# log_p_x_np = vae_model.compute_log_likelihood(x_input = x_valid, z_input = samples_valid)
+	# print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))

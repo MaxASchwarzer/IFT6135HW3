@@ -233,12 +233,24 @@ if __name__ == '__main__' :
 		break
 	print('##################################################')
 	for batch_id, (x_test, y_test) in enumerate(test_loader) :
-		print('[INFO] Valid batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
+		print('[INFO] Test batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
 		break
 
-	# sys.exit()
+	# Check repeated iterations
+	for i in range(3) :
+		print('##################################################')
+		for batch_id, (x_train, y_train) in enumerate(train_loader) :
+			print('[INFO] Train batch : Index : ', batch_id, ' Shape of x : ', x_train.shape, ' Shape of y : ', y_train.shape)
+		print('##################################################')
+		for batch_id, (x_valid, y_valid) in enumerate(valid_loader) :
+			print('[INFO] Valid batch : Index : ', batch_id, ' Shape of x : ', x_valid.shape, ' Shape of y : ', y_valid.shape)
+		print('##################################################')
+		for batch_id, (x_test, y_test) in enumerate(test_loader) :
+			print('[INFO] Test batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
 
-	# Quick visualization
+	sys.exit()
+
+	# Quick visualization, if you have these files
 	import Print_Updating_Info as print_utils
 	import Display_Custom_Plots as display_utils
 
