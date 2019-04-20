@@ -222,19 +222,6 @@ if __name__ == '__main__' :
 	train_loader, valid_loader, test_loader = get_standard_data_loaders(	train_batch_size = 16, 
 																			valid_batch_size = 16, 
 																			test_batch_size = 16)
-	# Check shapes
-	print('##################################################')
-	for batch_id, (x_train, y_train) in enumerate(train_loader) :
-		print('[INFO] Train batch : Index : ', batch_id, ' Shape of x : ', x_train.shape, ' Shape of y : ', y_train.shape)
-		break
-	print('##################################################')
-	for batch_id, (x_valid, y_valid) in enumerate(valid_loader) :
-		print('[INFO] Valid batch : Index : ', batch_id, ' Shape of x : ', x_valid.shape, ' Shape of y : ', y_valid.shape)
-		break
-	print('##################################################')
-	for batch_id, (x_test, y_test) in enumerate(test_loader) :
-		print('[INFO] Test batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
-		break
 
 	# Check repeated iterations
 	for i in range(3) :
@@ -247,6 +234,26 @@ if __name__ == '__main__' :
 		print('##################################################')
 		for batch_id, (x_test, y_test) in enumerate(test_loader) :
 			print('[INFO] Test batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
+
+	# Check shapes and sizes
+	print('##################################################')
+	for batch_id, (x_train, y_train) in enumerate(train_loader) :
+		print('[INFO] Train batch : Index : ', batch_id, ' Shape of x : ', x_train.shape, ' Shape of y : ', y_train.shape)
+		print('[INFO] Max value : ', np.max(x_train.cpu().data.numpy()))
+		print('[INFO] Min value : ', np.min(x_train.cpu().data.numpy()))
+		break
+	print('##################################################')
+	for batch_id, (x_valid, y_valid) in enumerate(valid_loader) :
+		print('[INFO] Valid batch : Index : ', batch_id, ' Shape of x : ', x_valid.shape, ' Shape of y : ', y_valid.shape)
+		print('[INFO] Max value : ', np.max(x_valid.cpu().data.numpy()))
+		print('[INFO] Min value : ', np.min(x_valid.cpu().data.numpy()))
+		break
+	print('##################################################')
+	for batch_id, (x_test, y_test) in enumerate(test_loader) :
+		print('[INFO] Test batch : Index : ', batch_id, ' Shape of x : ', x_test.shape, ' Shape of y : ', y_test.shape)
+		print('[INFO] Max value : ', np.max(x_test.cpu().data.numpy()))
+		print('[INFO] Min value : ', np.min(x_test.cpu().data.numpy()))
+		break
 
 	sys.exit()
 

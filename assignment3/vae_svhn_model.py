@@ -153,7 +153,8 @@ class vaeSVHNModel(nn.Module) :
 		"""
 
 		# Compute binary cross-entropy
-		binary_cross_entropy_loss = fn.binary_cross_entropy(input = x_reconstr.view(-1, 32*32*3), target = x.view(-1, 32*32*3), reduction = 'sum') 
+		# binary_cross_entropy_loss = fn.binary_cross_entropy(input = x_reconstr.view(-1, 32*32*3), target = x.view(-1, 32*32*3), reduction = 'sum') 
+		binary_cross_entropy_loss = fn.mse_loss(input = x_reconstr.view(-1, 32*32*3), target = x.view(-1, 32*32*3), reduction = 'sum') 
 		# print('[DEBUG] BCE Loss Shape : ', binary_cross_entropy_loss.shape)
 		# Compute KL-divergence
 		kl_loss = -0.5*torch.sum(1.0 + log_var - mean.pow(2) - log_var.exp())
