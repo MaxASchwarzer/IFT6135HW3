@@ -294,8 +294,8 @@ class vaeSVHNModel(nn.Module) :
 				print('[INFO] Time per iteration : ', time_stop - time_start)
 
 			# Evaluate the model
-			_, _, _, _, _, val_loss = self.test(split = 'Valid')
-			_, _, _, _, _, te_loss = self.test(split = 'Test')
+			_, _, _, _, _, val_loss = self.test(split = 'valid')
+			_, _, _, _, _, te_loss = self.test(split = 'test')
 			if is_verbose :
 				print('[INFO] Epoch : ', trigger_stop_training, ' Iteration : ', iteration_count, ' Validation Loss : ', val_loss)
 				print('[INFO] Epoch : ', trigger_stop_training, ' Iteration : ', iteration_count, ' Testing Loss : ', te_loss)
@@ -336,7 +336,7 @@ class vaeSVHNModel(nn.Module) :
 		inputs :
 
 		split :
-			The dataset split on which we want to test the model. SUPPORT : 'Train', 'Valid', 'Test', 'None'
+			The dataset split on which we want to test the model. SUPPORT : 'Train', 'valid', 'test', 'None'
 		x_default : None
 			The default valued input, when we want to test for a particular input rather than a data split. SUPPORT : None, <np.ndarray instance>
 
@@ -606,7 +606,7 @@ if __name__ == '__main__' :
 	vae_model.train(num_epochs = 30)
 
 	# # Test the model
-	# x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
+	# x_valid, y_valid = vae_model.data_loader.get_data_split('valid')
 	# samples_valid = vae_model.sample_z(x_input = x_valid, num_samples = 200)
 	# log_p_x_np = vae_model.compute_log_likelihood(x_input = x_valid, z_input = samples_valid)
 	# print(np.max(log_p_x_np), ' ', np.mean(log_p_x_np))
