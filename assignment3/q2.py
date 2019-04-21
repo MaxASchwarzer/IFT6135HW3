@@ -30,7 +30,7 @@ parser.add_argument('--num_epochs', type = int, default = 20, help = 'The maximu
 parser.add_argument('--model_path', type = str, default = './vae_models', help = 'Where to store the trained model')
 parser.add_argument('--model_name', type = str, default = 'EXPT_Q2', help = 'Name of the trained model')
 parser.add_argument('--load_path', type = str, default = './vae_models', help = 'Trained model that should be loaded for mode test')
-parser.add_argument('--load_path', type = str, default = 'EXPT_Q2', help = 'Name of the trained model to load')
+parser.add_argument('--load_name', type = str, default = 'EXPT_Q2', help = 'Name of the trained model to load')
 parser.add_argument('--sample_count', type = int, default = 512, help = 'Number of random samples')
 
 # Parse the arguments
