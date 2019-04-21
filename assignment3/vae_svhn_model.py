@@ -542,7 +542,7 @@ class vaeSVHNModel(nn.Module) :
 			assert(log_p_z.shape[1] == 1)
 
 			# Compute the log p(x|z) term from the reconstruction and the original image. SHAPE : [<num_samples = 200>, 1]
-			log_p_x_given_z = np.sum(x_np.reshape([-1, 28*28])*np.log(reconstr_np.reshape([-1, 28*28]) + 1e-9) + (1.0 - x_np.reshape([-1, 28*28]))*np.log(1.0 - reconstr_np.reshape([-1, 28*28]) + 1e-9), axis = 1, keepdims = True)
+			log_p_x_given_z = np.sum(x_np.reshape([-1, 32*32*3])*np.log(reconstr_np.reshape([-1, 32*32*3]) + 1e-9) + (1.0 - x_np.reshape([-1, 32*32*3]))*np.log(1.0 - reconstr_np.reshape([-1, 32*32*3]) + 1e-9), axis = 1, keepdims = True)
 			assert(log_p_x_given_z.shape[0] == num_samples)
 			assert(log_p_x_given_z.shape[1] == 1)
 			
