@@ -9,7 +9,7 @@ import sys
 import argparse
 import time
 
-from vae_svhn import vaeSVHN
+from vae_svhn_model import vaeSVHNModel
 from svhn_loader import get_standard_data_loaders
 from vae_utils import encoderConfig, decoderConfig
 
