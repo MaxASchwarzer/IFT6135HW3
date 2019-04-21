@@ -555,6 +555,38 @@ class vaeModel(nn.Module) :
 		return log_p_x_np
 
 
+	# Define a method to generate images from noise
+	def generate_data(self, z_input) :
+
+		"""
+		inputs :
+
+		z_input :
+			The N(0, I) noise from which to generate the data. SHAPE : [<batch_size>, <latent_size>]
+
+		outputs :
+
+		x_reconstr_np :
+			The reconstructed dataset. SHAPE : [<batch_size>, <channel_in>, <height>, <width>]
+		"""
+
+		# Set the mode to testing
+		self.set_eval_mode()
+
+		# Process the noise onto the device
+		z = torch.Tensor(z_input)
+		if torch.cuda.is_available() :
+			z = z.cuda()
+
+		# Pass through decoder
+		x_reconstr = self.model.decode(inputs = z)
+
+		# Convert to numpy 
+		x_reconstr_np = x_reconstr.cpu().data.numpy()
+
+		return x_reconstr_np
+
+
 # Pseudo-main
 if __name__ == '__main__' :
 
