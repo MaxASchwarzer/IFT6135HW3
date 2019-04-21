@@ -39,6 +39,7 @@ seed = args.seed
 batch_size = args.batch_size
 dataset_path = args.dataset_path
 mode = args.mode
+outfolder = args.outfolder
 num_epochs = args.num_epochs
 model_path = args.model_path
 model_name = args.model_name
@@ -78,6 +79,7 @@ f_handle.write('seed : ' + str(seed) + '\n')
 f_handle.write('batch_size : ' + str(batch_size) + '\n')
 f_handle.write('dataset_path : ' + str(dataset_path) + '\n')
 f_handle.write('mode : ' + str(mode) + '\n')
+f_handle.write('outfolder : ' + str(outfolder) + '\n')
 f_handle.write('device : ' + str(device) + '\n')
 f_handle.write('num_epochs : ' + str(num_epochs) + '\n')
 f_handle.write('model_path : ' + str(model_path) + '\n')
