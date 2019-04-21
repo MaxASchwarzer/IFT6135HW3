@@ -570,10 +570,10 @@ if __name__ == '__main__' :
 	if 'cuda' in device :
 		vae_model = vae_model.cuda()
 
-	vae_model.load_model()
+	# vae_model.load_model()
 
-	# # Train the model
-	# vae_model.train(num_epochs = 20)
+	# Train the model
+	vae_model.train(num_epochs = 20)
 
 	# Test the model
 	x_valid, y_valid = vae_model.data_loader.get_data_split('Valid')
