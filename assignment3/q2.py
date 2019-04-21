@@ -168,7 +168,7 @@ def calculate_elbo(model, split) :
 	elbo = 0.0
 	net_batch = 0
 	
-	for i in range(elbo_list) :
+	for i in range(len(elbo_list)) :
 		elbo += elbo_list[i]*batch_size_list[i]
 		net_batch += batch_size_list[i]
 
