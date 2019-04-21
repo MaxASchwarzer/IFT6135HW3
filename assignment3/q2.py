@@ -223,9 +223,9 @@ def calculate_log_likelihood_per_split(model, split) :
 
 	return ll_list, batch_size_list, ll
 
-# ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
+ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
 # _, _, train_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Train')
-ll_log_handle.write('[INFO] Train split log-likelihood : ' +  str(train_ll) + '\n')
+# ll_log_handle.write('[INFO] Train split log-likelihood : ' +  str(train_ll) + '\n')
 _, _, valid_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Valid')
 ll_log_handle.write('[INFO] Valid split log-likelihood : ' +  str(valid_ll) + '\n')
 _, _, test_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Test')
