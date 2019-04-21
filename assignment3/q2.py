@@ -103,6 +103,8 @@ data_loader = BinarizedMNIST(	batch_size = batch_size, dataset_path = dataset_pa
 ####################################################################################################
 # Create the model
 vae_model = vaeModel(data_loader = data_loader, device = device, architecture = 'Standard')
+if torch.cuda.is_available() :
+	vae_model = vae_model.cuda()
 
 
 ####################################################################################################
