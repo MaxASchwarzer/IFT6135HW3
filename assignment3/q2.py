@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser('Q2: Variational Auto-Encoder Experiments')
 # Numpy, torch and other platform args
 parser.add_argument('--seed', type = int, default = 0, help = "The seed to use for the torch stuff")
 # Data loader args
-parser.add_argument('--batch_size', type = int, default = 20, help = "Batch size for Train, Valid and Test batches")
+parser.add_argument('--batch_size', type = int, default = 64, help = "Batch size for Train, Valid and Test batches")
 parser.add_argument('--dataset_path', type = str, default = './', help = 'The path to .npy files of BinarizedMNIST')
 # Train/test args
 parser.add_argument('--mode', type = str, default = 'train', help = 'Whether to carry out training')
@@ -219,8 +219,8 @@ def calculate_log_likelihood_per_split(model, split) :
 
 	return ll_list, batch_size_list, ll
 
-ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
-_, _, train_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Train')
+# ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
+# _, _, train_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Train')
 ll_log_handle.write('[INFO] Train split log-likelihood : ' +  str(train_ll) + '\n')
 _, _, valid_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Valid')
 ll_log_handle.write('[INFO] Valid split log-likelihood : ' +  str(valid_ll) + '\n')
