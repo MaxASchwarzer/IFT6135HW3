@@ -494,11 +494,9 @@ class vaeSVHNModel(nn.Module) :
 			x_base = x_input[i]
 			x_batch = np.array([x_base for _ in range(1)]).astype(np.float32) # No need to perform multiple things now
 			# Reshape to image
-			x_batch = np.reshape(x_batch, [-1, 28, 28, 1])
+			x_batch = np.reshape(x_batch, [-1, 32, 32, 3])
 			# Convert into a tensor
 			x_tensor = torch.Tensor(x_batch)
-			# Make first dimension as channel
-			x_tensor = x_tensor.permute(0, 3, 1, 2)
 			# Load to device
 			if 'cuda' in self.device :
 				x = x_tensor.cuda()
