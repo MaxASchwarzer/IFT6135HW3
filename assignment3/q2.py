@@ -142,6 +142,8 @@ def calculate_elbo(model, split) :
 		The list of elbo losses
 	batch_size_list :
 		The list of all the batch sizes
+	elbo :
+		The final elbo
 	"""
 
 	elbo_list = []
@@ -161,19 +163,33 @@ def calculate_elbo(model, split) :
 		# Add loss to list
 		elbo_list.append(loss)
 
-	return elbo_list, batch_size_list
+	assert(len(elbo_list) == len(batch_size_list))
+
+	elbo = 0.0
+	net_batch = 0
+	
+	for i in range(elbo_list) :
+		elbo += elbo_list[i]*batch_size_list[i]
+		net_batch += batch_size_list[i]
+
+	elbo = elbo*1.0/(1.0*float(net_batch))
+
+	return elbo_list, batch_size_list, elbo
 
 # Reset the valid data-split
 elbo_log_handle = open(os.path.join(experiment_folder, 'ELBO.log'), 'w')
-train_elbo_loss_list, train_batch_size_list = calculate_elbo(model = vae_model, split = 'Train')
-elbo_log_handle.write(	'[INFO] Train ELBO per sample : ' 
-						+ str( float(sum(train_elbo_loss_list))*1.0/(float(sum(train_batch_size_list))*1.0) ) + '\n')
-valid_elbo_loss_list, valid_batch_size_list = calculate_elbo(model = vae_model, split = 'Valid')
-elbo_log_handle.write(	'[INFO] Valid ELBO per sample : ' 
-						+ str( float(sum(valid_elbo_loss_list))*1.0/(float(sum(valid_batch_size_list))*1.0) ) + '\n')
-test_elbo_loss_list, test_batch_size_list = calculate_elbo(model = vae_model, split = 'Test')
-elbo_log_handle.write(	'[INFO] Test ELBO per sample : ' 
-						+ str( float(sum(test_elbo_loss_list))*1.0/(float(sum(test_batch_size_list))*1.0) ) + '\n')
+train_elbo_loss_list, train_batch_size_list, train_elbo = calculate_elbo(model = vae_model, split = 'Train')
+# elbo_log_handle.write(	'[INFO] Train ELBO per sample : ' 
+# 						+ str( float(sum(train_elbo_loss_list))*1.0/(float(sum(train_batch_size_list))*1.0) ) + '\n')
+elbo_log_handle.write(	'[INFO] Train ELBO per sample : ' + str(train_elbo) + '\n')
+valid_elbo_loss_list, valid_batch_size_list, valid_elbo = calculate_elbo(model = vae_model, split = 'Valid')
+# elbo_log_handle.write(	'[INFO] Valid ELBO per sample : ' 
+# 						+ str( float(sum(valid_elbo_loss_list))*1.0/(float(sum(valid_batch_size_list))*1.0) ) + '\n')
+elbo_log_handle.write(	'[INFO] Valid ELBO per sample : ' + str(valid_elbo) + '\n')
+test_elbo_loss_list, test_batch_size_list, test_elbo = calculate_elbo(model = vae_model, split = 'Test')
+# elbo_log_handle.write(	'[INFO] Test ELBO per sample : ' 
+# 						+ str( float(sum(test_elbo_loss_list))*1.0/(float(sum(test_batch_size_list))*1.0) ) + '\n')
+elbo_log_handle.write(	'[INFO] Test ELBO per sample : ' + str(test_elbo) + '\n')
 elbo_log_handle.close()
 
 
