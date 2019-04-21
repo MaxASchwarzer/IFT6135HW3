@@ -266,7 +266,7 @@ def calculate_log_likelihood_per_split(model, split) :
 		if torch.cuda.is_available() :
 			x_batch = x_batch.cuda()
 		# Get samples
-		samples = model.sample_z(self, x_batch, num_samples = 200)
+		samples = model.sample_z(x_batch, num_samples = 200)
 		# Convert the batch to numpy 
 		x_batch_np = x_batch.cpu().data.numpy()
 		# Get the log-likelihood
