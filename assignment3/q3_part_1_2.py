@@ -178,11 +178,11 @@ for i in range(sample_count) :
 ####################################################################################################
 # Repeat the experiment
 q31_dict = os.path.join(experiment_folder, 'Q_3_1')
-os.mkdir(q31_dict, mode, dir_fd)
+os.mkdir(q31_dict)
 # Repeat ...
 for a_run in range(repeat_q_3_1) :
 	run_dict = os.path.join(q31_dict, str(a_run))
-	os.mkdir(run_dict, mode, dir_fd)
+	os.mkdir(run_dict)
 	# Get a noise
 	z = np.random.normal(loc = 0.0, scale = 1.0, size = [1, 100])	
 	x_generated = vae_model.generate_data(z_input = z)
