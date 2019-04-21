@@ -157,7 +157,7 @@ def calculate_elbo(model, split) :
 		# Add batch size
 		batch_size_list.append(int(x_batch.shape[0]))
 		# Test using this batch
-		_, _, _, _, _, loss = model.test(split = None, x_default = x_batch)
+		_, _, _, _, _, loss = model.test(split = 'None', x_default = x_batch)
 		# Add loss to list
 		elbo_list.append(loss)
 

@@ -154,7 +154,7 @@ class BinarizedMNIST(object) :
 		else :
 			print('[ERROR] Unimplemented option to load directly.')
 			print('[ERROR] Terminating the code ...')
-			sys.exit(status)
+			sys.exit()
 
 		# Create a random interation
 		self.iteration_train = np.random.permutation(self.x_train.shape[0])
@@ -199,7 +199,7 @@ class BinarizedMNIST(object) :
 		else :
 			print('[ERROR] Wrong split is querried : ', str(split))
 			print('[ERROR] Terminating the code ...')
-			sys.exit(status)
+			sys.exit()
 
 
 	# Define a method to get the next batch from the split
@@ -279,7 +279,7 @@ class BinarizedMNIST(object) :
 		else :
 			print('[ERROR] Wrong split is querried : ', str(split))
 			print('[ERROR] Terminating the code ...')
-			sys.exit(status)
+			sys.exit()
 
 
 	# Define a function to reset the batch generation
@@ -306,7 +306,7 @@ class BinarizedMNIST(object) :
 		else :
 			print('[ERROR] Wrong split is querried : ', str(split))
 			print('[ERROR] Terminating the code ...')
-			sys.exit(status)
+			sys.exit()
 
 
 # Pseudo-main
