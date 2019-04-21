@@ -160,4 +160,4 @@ os.mkdir(image_dict)
 x_gen_save = torch.Tensor(x_generated)
 for i in range(sample_count) :
 	print('[INFO] Saving image : ', i)
-	torchvision.utils.save_image(tensor = x_gen_save[i], filename = os.path.join(image_dict, str(i) + str(.jpg)))
+	torchvision.utils.save_image(tensor = x_gen_save[i], filename = os.path.join(image_dict, str(i) + str('.jpg')))
