@@ -141,7 +141,7 @@ if mode == 'train' :
 						is_verbose = True)
 elif mode == 'test' :
 	vae_model.load_model(	model_path = load_path, model_name = load_name)
-elif mode == 'resume'
+elif mode == 'resume' :
 	vae_model.load_model(	model_path = load_path, model_name = load_name)
 	vae_model.train(	stopping_criterion = 'Epochs', num_epochs = num_epochs, 
 						is_store_early_models = True, model_path = model_path, model_name = model_name, 
