@@ -34,8 +34,9 @@ parser.add_argument('--model_path', type = str, default = './vae_svhn_models', h
 parser.add_argument('--model_name', type = str, default = 'EXPT_Q3', help = 'Name of the trained model')
 parser.add_argument('--load_path', type = str, default = './vae_svhn_models', help = 'Trained model that should be loaded for mode test')
 parser.add_argument('--load_name', type = str, default = 'EXPT_Q3', help = 'Name of the trained model to load')
-parser.add_argument('--sample_count', type = int, default = 1000, help = 'Number of random samples')
-parser.add_argument('--repeat_q_3_1', type = int, default = 10, help = 'Number of times to repeat Q.3.1')
+parser.add_argument('--sample_count', type = int, default = 512, help = 'Number of random samples')
+parser.add_argument('--repeat_q_3_1', type = int, default = 10, help = 'Number of times to repeat Q.3.2')
+parser.add_argument('--repeat_q_3_2', type = int, default = 10, help = 'Number of times to repeat Q.3.3')
 parser.add_argument('--perturb', type = float, default = 1e-1, help = 'Per dimension perturbation')
 
 # Parse the arguments
@@ -164,7 +165,7 @@ x_generated = vae_model.generate_data(z_input = z)
 np.save(file = os.path.join(experiment_folder, 'z_generation'), arr = z)
 np.save(file = os.path.join(experiment_folder, 'x_generation'), arr = x_generated)
 # Create a storage directoy
-image_dict = os.path.join(experiment_folder, 'VAE_Generated_Images')
+image_dict = os.path.join(experiment_folder, 'Q_3_1')
 os.mkdir(image_dict)
 # Save each of the image
 x_gen_save = torch.Tensor(x_generated)
@@ -177,7 +178,7 @@ for i in range(sample_count) :
 # Q.3.2 Noise-and-Dimension
 ####################################################################################################
 # Repeat the experiment
-q31_dict = os.path.join(experiment_folder, 'Q_3_1')
+q31_dict = os.path.join(experiment_folder, 'Q_3_2')
 os.mkdir(q31_dict)
 # Repeat ...
 for a_run in range(repeat_q_3_1) :
@@ -185,6 +186,7 @@ for a_run in range(repeat_q_3_1) :
 	os.mkdir(run_dict)
 	# Get a noise
 	z = np.random.normal(loc = 0.0, scale = 1.0, size = [1, 100])	
+	np.save(file = os.path.join(run_dict, 'z_generation'), arr = z)
 	x_generated = vae_model.generate_data(z_input = z)
 	x_gen_torch = torch.Tensor(x_generated)
 	torchvision.utils.save_image(tensor = x_gen_torch, filename = os.path.join(run_dict, str('Base.jpg')))
@@ -196,3 +198,38 @@ for a_run in range(repeat_q_3_1) :
 		x_i = vae_model.generate_data(z_input = z_i)
 		x_i_torch = torch.Tensor(x_i)
 		torchvision.utils.save_image(tensor = x_i_torch, filename = os.path.join(run_dict, str(i) + str('.jpg')))
+
+
+####################################################################################################
+# Q.3.3 Interpolation in Latent and Data-Spaces
+####################################################################################################
+# Repeat the experiment
+q32_dict = os.path.join(experiment_folder, 'Q_3_3')
+os.mkdir(q32_dict)
+# Repeat ...
+for a_run in range(repeat_q_3_2) :
+	run_dict = os.path.join(q32_dict, str(a_run))
+	os.mkdir(run_dict)
+	# Get two random noises
+	z_1 = np.random.normal(loc = 0.0, scale = 1.0, size = [1, 100])	
+	z_2 = np.random.normal(loc = 0.0, scale = 1.0, size = [1, 100])	
+	np.save(file = os.path.join(run_dict, 'z_1_generation'), arr = z_1)
+	np.save(file = os.path.join(run_dict, 'z_2_generation'), arr = z_2)
+	# Create the linspace of all the intermediate alphas
+	alphas = np.linspace(start = 0.0, stop = 1.0, num = 11)
+	# For each alpha ...
+	for i in range(alphas.shape[0]) :
+		# Get the interpolated noise
+		z_i = alphas[i] * z_1 + (1.0 - alphas[i]) * z_2
+		x_i = vae_model.generate_data(z_input = z)
+		x_i_torch = torch.Tensor(x_i)
+		torchvision.utils.save_image(tensor = x_i_torch, filename = os.path.join(run_dict, str(i) + str('_generated.jpg')))
+	# Now, get the images for the z_1, z_2
+	x_1 = vae_model.generate_data(z_input = z_1)
+	x_2 = vae_model.generate_data(z_input = z_2)
+	# Create a list of all interpolated images
+	for i in range(alphas.shape[0]) :
+		# Get interpolated images
+		x_i = alphas[i] * x_1 + (1.0 - alphas[i]) * x_2
+		x_i_torch = torch.Tensor(x_i)
+		torchvision.utils.save_image(tensor = x_i_torch, filename = os.path.join(run_dict, str(i) + str('_interpolated.jpg')))

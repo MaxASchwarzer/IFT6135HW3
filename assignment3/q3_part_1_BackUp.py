@@ -34,7 +34,7 @@ parser.add_argument('--model_path', type = str, default = './vae_svhn_models', h
 parser.add_argument('--model_name', type = str, default = 'EXPT_Q3', help = 'Name of the trained model')
 parser.add_argument('--load_path', type = str, default = './vae_svhn_models', help = 'Trained model that should be loaded for mode test')
 parser.add_argument('--load_name', type = str, default = 'EXPT_Q3', help = 'Name of the trained model to load')
-parser.add_argument('--sample_count', type = int, default = 512, help = 'Number of random samples')
+parser.add_argument('--sample_count', type = int, default = 1000, help = 'Number of random samples')
 parser.add_argument('--repeat_q_3_1', type = int, default = 10, help = 'Number of times to repeat Q.3.1')
 parser.add_argument('--perturb', type = float, default = 1e-1, help = 'Per dimension perturbation')
 
