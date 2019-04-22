@@ -48,6 +48,8 @@ model_name = args.model_name
 load_path = args.load_path
 load_name = args.load_name
 sample_count = args.sample_count
+display_im_count = args.display_im_count
+display_im_count_per_row = args.display_im_count_per_row
 
 
 ####################################################################################################
@@ -89,6 +91,8 @@ f_handle.write('model_name : ' + str(model_name) + '\n')
 f_handle.write('load_path : ' + str(load_path) + '\n')
 f_handle.write('load_name : ' + str(load_name) + '\n')
 f_handle.write('sample_count : ' + str(sample_count) + '\n')
+f_handle.write('display_im_count : ' + str(display_im_count) + '\n')
+f_handle.write('display_im_count_per_row : ' + str(display_im_count_per_row) + '\n')
 f_handle.close()
 
 
