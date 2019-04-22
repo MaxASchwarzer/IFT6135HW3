@@ -411,7 +411,7 @@ class vaeSVHNModel(nn.Module) :
 		# Get the samples, noise, mean and log-variances from the forward pass of the VAE
 		reconstr, samples, noise, mean, log_var = self.model(inputs = x)
 		# Compute the loss
-		loss = self.evaluate_loss(x = x, x_reconstr = reconstr, mean = mean, log_var = log_var)
+		loss = self.evaluate_loss(x = x, x_reconstr = reconstr, mean = mean, log_var = log_var, beta = 1.0)
 
 		# Get the numpy arrays corresponding to everything
 		reconstr_np = reconstr.cpu().data.numpy()
