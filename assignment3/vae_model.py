@@ -526,7 +526,6 @@ class vaeModel(nn.Module) :
 
 			# Compute the log p(z) term from the samples. Note that the constant vanishes with the denominator's constant. SHAPE : [<num_samples = 200>, 1]
 			log_p_z = multivariate_normal.logpdf(x = samples_np, mean = np.zeros([latent_size,]), cov = np.eye(latent_size)).reshape([num_samples, 1])
-			# log_p_z = - 0.5*np.sum((samples_np/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
 			assert(log_p_z.shape[0] == num_samples)
 			assert(log_p_z.shape[1] == 1)
 
@@ -537,7 +536,6 @@ class vaeModel(nn.Module) :
 			
 			# Compute the log q(z|x) term from the predicted mean and variance 
 			log_q_z_given_x = multivariate_normal.logpdf(x = samples_np, mean = mean_np[0], cov = np.diag(np.exp(log_var_np[0]))).reshape([num_samples, 1])
-			# log_q_z_given_x = np.log(1.0/(np.prod(np.exp(0.5*log_var_np), axis = 1, keepdims = True))) - 0.5*np.sum(((samples_np - mean_np)/(np.exp(0.5*log_var_np)))**2, axis = 1, keepdims = True)
 			assert(log_q_z_given_x.shape[0] == num_samples)
 			assert(log_q_z_given_x.shape[1] == 1)
 

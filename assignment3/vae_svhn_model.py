@@ -132,7 +132,7 @@ class vaeSVHNModel(nn.Module) :
 
 
 	# Define a method to compute the loss of the architecture
-	def evaluate_loss(self, x, x_reconstr, mean, log_var) :
+	def evaluate_loss(self, x, x_reconstr, mean, log_var, beta) :
 
 		"""
 		inputs :
@@ -145,6 +145,8 @@ class vaeSVHNModel(nn.Module) :
 			The mean of the image batch. SHAPE : [<batch_size>, <latent_size = 100>]
 		log_var :
 			The log-variance of the image batch. SHAPE : [<batch_size>, <latent_size = 100>]
+		beta :
+			The level of annealing. Ideal to start at beta = 1e-6 and increase to 1 gradually
 
 		outputs :
 
@@ -160,7 +162,7 @@ class vaeSVHNModel(nn.Module) :
 		kl_loss = -0.5*torch.sum(1.0 + log_var - mean.pow(2) - log_var.exp())
 		# print('[DEBUG] KL-Divergence Loss Shape : ', kl_loss.shape)
 		# Net loss
-		loss = reconstruction_loss + kl_loss
+		loss = reconstruction_loss + beta * kl_loss
 
 		print('[DEBUG] Reconstruction loss : ', reconstruction_loss.cpu().data.numpy(), ' KL loss : ', kl_loss.cpu().data.numpy()) 
 
@@ -240,6 +242,11 @@ class vaeSVHNModel(nn.Module) :
 		val_loss = 0.0
 		te_loss = 0.0
 
+		# Define annealing
+		beta_init = 1e-6
+		low_beta_epoch = 4
+		high_beta_epoch = 24
+
 		# If we want to store the progress, create a file
 		if is_write_progress_to_log_file :
 			f_log = open(log_file_path, 'w')
@@ -275,8 +282,16 @@ class vaeSVHNModel(nn.Module) :
 
 				# Get the samples, noise, mean and log-variances from the forward pass of the VAE
 				reconstr, samples, noise, mean, log_var = self.model(inputs = x)
+				# Compute current annealing
+				if trigger_stop_training <= low_beta_epoch :
+					beta_now = beta_init
+				elif trigger_stop_training >= high_beta_epoch :
+					beta_now = 1.0
+				else :
+					beta_now = beta_init*( (1.0/(beta_init))**(1.0/(high_beta_epoch - low_beta_epoch)) )**(trigger_stop_training - low_beta_epoch)
+				print('[INFO] Annealing beta value : ', beta_now)
 				# Compute the loss
-				loss = self.evaluate_loss(x = x, x_reconstr = reconstr, mean = mean, log_var = log_var)
+				loss = self.evaluate_loss(x = x, x_reconstr = reconstr, mean = mean, log_var = log_var, beta = beta_now)
 				# Back-propagate the gradients
 				loss.backward()
 				# Update the weights
