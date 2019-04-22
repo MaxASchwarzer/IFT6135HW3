@@ -244,6 +244,7 @@ class vaeSVHNModel(nn.Module) :
 
 		# Define annealing
 		beta_init = 1e-6
+		beta_final = 1e-2
 		low_beta_epoch = 4
 		high_beta_epoch = 24
 
@@ -288,7 +289,7 @@ class vaeSVHNModel(nn.Module) :
 				elif trigger_stop_training >= high_beta_epoch :
 					beta_now = 1.0
 				else :
-					beta_now = beta_init*( (1.0/(beta_init))**(1.0/(high_beta_epoch - low_beta_epoch)) )**(trigger_stop_training - low_beta_epoch)
+					beta_now = beta_init*( (beta_final/(beta_init))**(1.0/(high_beta_epoch - low_beta_epoch)) )**(trigger_stop_training - low_beta_epoch)
 				print('[INFO] Annealing beta value : ', beta_now)
 				# Compute the loss
 				loss = self.evaluate_loss(x = x, x_reconstr = reconstr, mean = mean, log_var = log_var, beta = beta_now)
