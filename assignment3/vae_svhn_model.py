@@ -246,7 +246,7 @@ class vaeSVHNModel(nn.Module) :
 		beta_init = 1e-6
 		beta_final = 1.0
 		low_beta_epoch = 10
-		high_beta_epoch = 10
+		high_beta_epoch = 20
 
 		# If we want to store the progress, create a file
 		if is_write_progress_to_log_file :
