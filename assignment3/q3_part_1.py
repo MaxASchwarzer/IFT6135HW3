@@ -229,7 +229,7 @@ for a_run in range(repeat_q_3_2) :
 	for i in range(alphas.shape[0]) :
 		# Get the interpolated noise
 		z_i = alphas[i] * z_1 + (1.0 - alphas[i]) * z_2
-		x_i = vae_model.generate_data(z_input = z)
+		x_i = vae_model.generate_data(z_input = z_i)
 		x_i_torch = torch.Tensor(x_i)
 		torchvision.utils.save_image(tensor = x_i_torch, filename = os.path.join(run_dict, str(i) + str('_generated.jpg')))
 	# Now, get the images for the z_1, z_2
