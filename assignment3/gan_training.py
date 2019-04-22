@@ -343,8 +343,8 @@ def train(flags):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='WGAN-GP training.')
-    parser.add_argument('--batch_size', type=int, default=16)
-    parser.add_argument("--iters", type=int, default=2000000, help="Number of iters to train for")
+    parser.add_argument('--batch_size', type=int, default=64)
+    parser.add_argument("--iters", type=int, default=1000000, help="Number of iters to train for")
     parser.add_argument("--disc_iters", type=int, default=4, help="Number of disc iters per gen iter")
     parser.add_argument("--sample_freq", type=int, default=1000, help="How often to sample")
     parser.add_argument("--print_freq", type=int, default=10, help="How often to print")
@@ -352,9 +352,9 @@ if __name__ == "__main__":
     parser.add_argument("--load", type=str, default=None, help="File to load model from.  Blank for none.")
     parser.add_argument("--save", type=str, default="wgan.pt", help="File to save model to.")
     parser.add_argument("--zdim", type=int, default=100, help="Dimension of latent")
-    parser.add_argument("--blocks", type=int, default=2, help="# of resblocks per pooling")
-    parser.add_argument("--channels_g", type=int, default=32, help="Base # of channels in g resnets.")
-    parser.add_argument("--channels_d", type=int, default=32, help="Base # of channels in d resnets.")
+    parser.add_argument("--blocks", type=int, default=1, help="# of resblocks per pooling")
+    parser.add_argument("--channels_g", type=int, default=64, help="Base # of channels in g resnets.")
+    parser.add_argument("--channels_d", type=int, default=64, help="Base # of channels in d resnets.")
 
     flags = parser.parse_args()
     model = train(flags)
