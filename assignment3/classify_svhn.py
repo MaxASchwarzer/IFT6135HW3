@@ -58,25 +58,31 @@ class Classifier(nn.Module):
         self.conv_stack = nn.Sequential(
             nn.Conv2d(3, 8, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(8),
             nn.Dropout2d(p=0.1),
             nn.Conv2d(8, 16, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(16),
             nn.Dropout2d(p=0.1),
             nn.MaxPool2d(2),
 
             nn.Conv2d(16, 16, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(16),
             nn.Dropout2d(p=0.1),
             nn.Conv2d(16, 32, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(32),
             nn.Dropout2d(p=0.1),
             nn.MaxPool2d(2),
 
             nn.Conv2d(32, 64, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(64),
             nn.Dropout2d(p=0.1),
             nn.Conv2d(64, 128, 3, padding=1),
             nn.ELU(),
+            nn.BatchNorm2d(128),
             nn.Dropout2d(p=0.1),
             nn.MaxPool2d(2),
 
@@ -146,7 +152,7 @@ if __name__ == "__main__":
 
         if acc > best_acc:
             best_acc = acc
-            torch.save(classify, "svhn_classifier.pt")
+            torch.save(classify, "svhn_classifier_2.pt")
             print("Saved.")
-    classify = torch.load("svhn_classifier.pt")
+    classify = torch.load("svhn_classifier_@.pt")
     print("Test accuracy:", evaluate(classify, test))
