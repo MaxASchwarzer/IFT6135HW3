@@ -145,4 +145,4 @@ x_gen_torch = torch.Tensor(x_generated)
 indices = np.random.randint(low = 0, high = sample_count, size = [display_im_count, ]).astype(np.int32)
 x_to_show = x_gen_torch[indices]
 # Put to a figure
-torchvision.utils.save_image(tensor = x_to_show, filename = os.path.join(experiment_folder, 'Generated_Samples' + str('.jpg')))
+torchvision.utils.save_image(tensor = x_to_show, filename = os.path.join(experiment_folder, 'Generated_Samples' + str('.jpg')), nrow = display_im_count_per_row)
