@@ -287,7 +287,7 @@ class vaeSVHNModel(nn.Module) :
 				if trigger_stop_training <= low_beta_epoch :
 					beta_now = beta_init
 				elif trigger_stop_training >= high_beta_epoch :
-					beta_now = 1.0
+					beta_now = beta_final
 				else :
 					beta_now = beta_init*( (beta_final/(beta_init))**(1.0/(high_beta_epoch - low_beta_epoch)) )**(trigger_stop_training - low_beta_epoch)
 				print('[INFO] Annealing beta value : ', beta_now)
