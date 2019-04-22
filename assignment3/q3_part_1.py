@@ -182,6 +182,9 @@ q31_dict = os.path.join(experiment_folder, 'Q_3_2')
 os.mkdir(q31_dict)
 # Repeat ...
 for a_run in range(repeat_q_3_1) :
+
+	print('[INFO] Run of Q.3.2 : ', a_run)
+
 	run_dict = os.path.join(q31_dict, str(a_run))
 	os.mkdir(run_dict)
 	# Get a noise
@@ -208,6 +211,9 @@ q32_dict = os.path.join(experiment_folder, 'Q_3_3')
 os.mkdir(q32_dict)
 # Repeat ...
 for a_run in range(repeat_q_3_2) :
+
+	print('[INFO] Run of Q.3.3 : ', a_run)
+
 	run_dict = os.path.join(q32_dict, str(a_run))
 	os.mkdir(run_dict)
 	# Get two random noises
