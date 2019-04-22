@@ -154,144 +154,144 @@ else :
 	sys.exit()
 
 
-####################################################################################################
-# Compute ELBO
-####################################################################################################
-def calculate_elbo(model, split) :
+# ####################################################################################################
+# # Compute ELBO
+# ####################################################################################################
+# def calculate_elbo(model, split) :
 
-	"""
-	inputs :
+# 	"""
+# 	inputs :
 
-	model :
-		The trained model instance
-	split : 
-		The data split for which to do this. SUPPORT : 'Train', 'Valid', 'Test'
+# 	model :
+# 		The trained model instance
+# 	split : 
+# 		The data split for which to do this. SUPPORT : 'Train', 'Valid', 'Test'
 
-	outputs :
+# 	outputs :
 	
-	elbo_list :
-		The list of elbo losses
-	batch_size_list :
-		The list of all the batch sizes
-	elbo :
-		The final elbo
-	"""
+# 	elbo_list :
+# 		The list of elbo losses
+# 	batch_size_list :
+# 		The list of all the batch sizes
+# 	elbo :
+# 		The final elbo
+# 	"""
 
-	elbo_list = []
-	batch_size_list = []
+# 	elbo_list = []
+# 	batch_size_list = []
 
-	# Set the split
-	if split == 'Train' :
-		data_loader = model.train_data_loader
-	elif split == 'Valid' :
-		data_loader = model.valid_data_loader
-	elif split == 'Test' :
-		data_loader = model.test_data_loader
-	else :
-		print('[ERROR] Wrong split : ', split, ' given.')
-		print('[ERROR] Terminating the code ...')
-		sys.exit()
+# 	# Set the split
+# 	if split == 'Train' :
+# 		data_loader = model.train_data_loader
+# 	elif split == 'Valid' :
+# 		data_loader = model.valid_data_loader
+# 	elif split == 'Test' :
+# 		data_loader = model.test_data_loader
+# 	else :
+# 		print('[ERROR] Wrong split : ', split, ' given.')
+# 		print('[ERROR] Terminating the code ...')
+# 		sys.exit()
 
-	# For each batch ...
-	for batch_id, (x_batch, y_batch) in enumerate(data_loader) :
-		# Add batch size
-		batch_size_list.append(int(x_batch.shape[0]))
-		# Get the ELBO
-		_, _, _, _, _, loss = model.test(split = 'None', x_default = x_batch)
-		# Add loss to list
-		elbo_list.append(loss)
+# 	# For each batch ...
+# 	for batch_id, (x_batch, y_batch) in enumerate(data_loader) :
+# 		# Add batch size
+# 		batch_size_list.append(int(x_batch.shape[0]))
+# 		# Get the ELBO
+# 		_, _, _, _, _, loss = model.test(split = 'None', x_default = x_batch)
+# 		# Add loss to list
+# 		elbo_list.append(loss)
 
-	assert(len(elbo_list) == len(batch_size_list))
+# 	assert(len(elbo_list) == len(batch_size_list))
 
-	elbo = 0.0
-	net_batch = 0
+# 	elbo = 0.0
+# 	net_batch = 0
 	
-	for i in range(len(elbo_list)) :
-		elbo += elbo_list[i]*batch_size_list[i]
-		net_batch += batch_size_list[i]
+# 	for i in range(len(elbo_list)) :
+# 		elbo += elbo_list[i]*batch_size_list[i]
+# 		net_batch += batch_size_list[i]
 
-	elbo = elbo*1.0/(1.0*float(net_batch))
+# 	elbo = elbo*1.0/(1.0*float(net_batch))
 
-	return elbo_list, batch_size_list, elbo
+# 	return elbo_list, batch_size_list, elbo
 
-elbo_log_handle = open(os.path.join(experiment_folder, 'ELBO.log'), 'w')
+# elbo_log_handle = open(os.path.join(experiment_folder, 'ELBO.log'), 'w')
 
-train_elbo_loss_list, train_batch_size_list, train_elbo = calculate_elbo(model = vae_model, split = 'Train')
-elbo_log_handle.write(	'[INFO] Train ELBO per sample : ' + str(train_elbo) + '\n')
+# train_elbo_loss_list, train_batch_size_list, train_elbo = calculate_elbo(model = vae_model, split = 'Train')
+# elbo_log_handle.write(	'[INFO] Train ELBO per sample : ' + str(train_elbo) + '\n')
 
-valid_elbo_loss_list, valid_batch_size_list, valid_elbo = calculate_elbo(model = vae_model, split = 'Valid')
-elbo_log_handle.write(	'[INFO] Valid ELBO per sample : ' + str(valid_elbo) + '\n')
+# valid_elbo_loss_list, valid_batch_size_list, valid_elbo = calculate_elbo(model = vae_model, split = 'Valid')
+# elbo_log_handle.write(	'[INFO] Valid ELBO per sample : ' + str(valid_elbo) + '\n')
 
-test_elbo_loss_list, test_batch_size_list, test_elbo = calculate_elbo(model = vae_model, split = 'Test')
-elbo_log_handle.write(	'[INFO] Test ELBO per sample : ' + str(test_elbo) + '\n')
+# test_elbo_loss_list, test_batch_size_list, test_elbo = calculate_elbo(model = vae_model, split = 'Test')
+# elbo_log_handle.write(	'[INFO] Test ELBO per sample : ' + str(test_elbo) + '\n')
 
-elbo_log_handle.close()
+# elbo_log_handle.close()
 
 
-####################################################################################################
-# Compute Log-Likelihood
-####################################################################################################
-# Calculate for the entire dataset the log-likelihood
-def calculate_log_likelihood_per_split(model, split) :
+# ####################################################################################################
+# # Compute Log-Likelihood
+# ####################################################################################################
+# # Calculate for the entire dataset the log-likelihood
+# def calculate_log_likelihood_per_split(model, split) :
 
-	"""
-	inputs :
+# 	"""
+# 	inputs :
 
-	model :
-		The trained model instance
-	split : 
-		The data split for which to do this
+# 	model :
+# 		The trained model instance
+# 	split : 
+# 		The data split for which to do this
 
-	outputs :
+# 	outputs :
 	
-	ll_list :
-		The list of log-likelihood losses
-	batch_size_list :
-		The list of all the batch sizes
-	ll :
-		The log-likelihood for the split
-	"""
+# 	ll_list :
+# 		The list of log-likelihood losses
+# 	batch_size_list :
+# 		The list of all the batch sizes
+# 	ll :
+# 		The log-likelihood for the split
+# 	"""
 
-	ll_list = np.array([])
-	batch_size_list = []
+# 	ll_list = np.array([])
+# 	batch_size_list = []
 
-	# Set the split
-	if split == 'Train' :
-		data_loader = model.train_data_loader
-	elif split == 'Valid' :
-		data_loader = model.valid_data_loader
-	elif split == 'Test' :
-		data_loader = model.test_data_loader
-	else :
-		print('[ERROR] Wrong split : ', split, ' given.')
-		print('[ERROR] Terminating the code ...')
-		sys.exit()
+# 	# Set the split
+# 	if split == 'Train' :
+# 		data_loader = model.train_data_loader
+# 	elif split == 'Valid' :
+# 		data_loader = model.valid_data_loader
+# 	elif split == 'Test' :
+# 		data_loader = model.test_data_loader
+# 	else :
+# 		print('[ERROR] Wrong split : ', split, ' given.')
+# 		print('[ERROR] Terminating the code ...')
+# 		sys.exit()
 
-	# For each batch ...
-	for batch_id, (x_batch, y_batch) in enumerate(data_loader) :
-		# Move to CUDA
-		if torch.cuda.is_available() :
-			x_batch = x_batch.cuda()
-		# Get samples
-		samples = model.sample_z(x_batch, num_samples = 200)
-		# Convert the batch to numpy 
-		x_batch_np = x_batch.cpu().data.numpy()
-		# Get the log-likelihood
-		log_likelihood_np = model.compute_log_likelihood(x_input = x_batch_np, z_input = samples)
-		ll_list = np.append(ll_list, log_likelihood_np) 
+# 	# For each batch ...
+# 	for batch_id, (x_batch, y_batch) in enumerate(data_loader) :
+# 		# Move to CUDA
+# 		if torch.cuda.is_available() :
+# 			x_batch = x_batch.cuda()
+# 		# Get samples
+# 		samples = model.sample_z(x_batch, num_samples = 200)
+# 		# Convert the batch to numpy 
+# 		x_batch_np = x_batch.cpu().data.numpy()
+# 		# Get the log-likelihood
+# 		log_likelihood_np = model.compute_log_likelihood(x_input = x_batch_np, z_input = samples)
+# 		ll_list = np.append(ll_list, log_likelihood_np) 
 
-	ll = np.sum(ll_list)/(1.0*float(sum(batch_size_list)))
+# 	ll = np.sum(ll_list)/(1.0*float(sum(batch_size_list)))
 
-	return ll_list, batch_size_list, ll
+# 	return ll_list, batch_size_list, ll
 
-ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
-# _, _, train_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Train')
-# ll_log_handle.write('[INFO] Train split log-likelihood : ' +  str(train_ll) + '\n')
-_, _, valid_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Valid')
-ll_log_handle.write('[INFO] Valid split log-likelihood : ' +  str(valid_ll) + '\n')
-_, _, test_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Test')
-ll_log_handle.write('[INFO] Test split log-likelihood : ' +  str(test_ll) + '\n')
-ll_log_handle.close()
+# ll_log_handle = open(os.path.join(experiment_folder, 'Log_Likelihood.log'), 'w')
+# # _, _, train_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Train')
+# # ll_log_handle.write('[INFO] Train split log-likelihood : ' +  str(train_ll) + '\n')
+# _, _, valid_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Valid')
+# ll_log_handle.write('[INFO] Valid split log-likelihood : ' +  str(valid_ll) + '\n')
+# _, _, test_ll = calculate_log_likelihood_per_split(model = vae_model, split = 'Test')
+# ll_log_handle.write('[INFO] Test split log-likelihood : ' +  str(test_ll) + '\n')
+# ll_log_handle.close()
 
 
 ####################################################################################################
