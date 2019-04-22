@@ -160,7 +160,7 @@ class vaeSVHNModel(nn.Module) :
 		kl_loss = -0.5*torch.sum(1.0 + log_var - mean.pow(2) - log_var.exp())
 		# print('[DEBUG] KL-Divergence Loss Shape : ', kl_loss.shape)
 		# Net loss
-		loss = reconstruction + kl_loss
+		loss = reconstruction_loss + kl_loss
 
 		print('[DEBUG] Reconstruction loss : ', reconstruction_loss.cpu().data.numpy(), ' KL loss : ', kl_loss.cpu().data.numpy()) 
 
