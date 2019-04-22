@@ -5,6 +5,7 @@ import torchvision.transforms as transforms
 import torch
 import classify_svhn
 import numpy as np
+import scipy
 from classify_svhn import Classifier
 
 SVHN_PATH = "svhn"
@@ -76,13 +77,18 @@ def calculate_fid_score(sample_feature_iterator,
     """
     To be implemented by you!
     """
-    sample_cov = np.cov(sample_feature_iterator, rowvar=False)
-    test_cov = np.cov(testset_feature_iterator, rowvar=False)
+    sample_feature_iterator = list(sample_feature_iterator)
+    samples = np.array(sample_feature_iterator)
+    testset_feature_iterator = list(testset_feature_iterator)
+    reals = np.array(testset_feature_iterator)
+    sample_cov = np.cov(samples, rowvar=False)
+    test_cov = np.cov(reals, rowvar=False)
 
-    sample_mean = np.mean(sample_feature_iterator, axis=1)
-    test_mean = np.mean(testset_feature_iterator, axis=1)
+    sample_mean = np.mean(samples, axis=0)
+    test_mean = np.mean(reals, axis=0)
 
-    fid = np.linalg.norm(sample_mean - test_mean) + np.trace(sample_cov + test_cov - 2*(sample_cov @ test_cov) ** 0.5)
+    m = scipy.linalg.sqrtm(sample_cov @ test_cov).real
+    fid = np.linalg.norm(test_mean - sample_mean)**2 + np.trace(sample_cov + test_cov - 2*m)
 
     return fid
 

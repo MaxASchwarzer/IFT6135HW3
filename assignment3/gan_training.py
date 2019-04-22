@@ -160,7 +160,7 @@ class ConvDiscriminator(nn.Module):
 
 
 class GAN(nn.Module):
-    def __init__(self, zdim=100, channels_g=32, channels_d=32, blocks=[1, 1, 1, 1, 1]):
+    def __init__(self, zdim=100, channels_g=32, channels_d=32, blocks=[1, 1, 1,]):
         super(GAN, self).__init__()
         self.generator = Generator(zdim=zdim, im_channels=3, hdim=channels_g*2**(len(blocks)-1), blocks=blocks)
         self.discriminator = ConvDiscriminator(im_channels=3, hdim=channels_d, blocks=blocks,)
@@ -196,6 +196,7 @@ class GAN(nn.Module):
             for i, im in enumerate(images):
                 torchvision.utils.save_image(im, filename=save + "/{}.png".format(i))
 
+            torchvision.utils.save_image(images[:64], filename=save + "/gan_samples.png")
             images = images.numpy()
             np.savez(save + "/samples.npz", images=images)
 
@@ -210,7 +211,7 @@ class GAN(nn.Module):
 
             for i in range(self.zdim):
                 perturbed = sample_z.clone()
-                perturbed[:, i] += 1.
+                perturbed[:, i] += 2.
                 images.append(self.generator(perturbed))
 
             if not os.path.isdir(save):
