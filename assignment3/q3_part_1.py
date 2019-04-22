@@ -54,6 +54,7 @@ load_path = args.load_path
 load_name = args.load_name
 sample_count = args.sample_count
 repeat_q_3_1 = args.repeat_q_3_1
+repeat_q_3_2 = args.repeat_q_3_2
 perturb = args.perturb
 
 ####################################################################################################
@@ -96,6 +97,7 @@ f_handle.write('load_path : ' + str(load_path) + '\n')
 f_handle.write('load_name : ' + str(load_name) + '\n')
 f_handle.write('sample_count : ' + str(sample_count) + '\n')
 f_handle.write('repeat_q_3_1 : ' + str(repeat_q_3_1) + '\n')
+f_handle.write('repeat_q_3_2 : ' + str(repeat_q_3_2) + '\n')
 f_handle.write('perturb : ' + str(perturb) + '\n')
 f_handle.close()
 
