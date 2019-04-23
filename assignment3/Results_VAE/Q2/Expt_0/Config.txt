@@ -1,0 +1,13 @@
+args : Namespace(batch_size=64, dataset_path='./', load_name='EXPT_Q2', load_path='./vae_models', mode='train', model_name='EXPT_Q2', model_path='./vae_models', num_epochs=20, outfolder='./', sample_count=512, seed=0)
+seed : 0
+batch_size : 64
+dataset_path : ./
+mode : train
+outfolder : ./
+device : cuda
+num_epochs : 20
+model_path : ./vae_models
+model_name : EXPT_Q2
+load_path : ./vae_models
+load_name : EXPT_Q2
+sample_count : 512

@@ -1,0 +1,32 @@
+Epoch : 0 TrainingLoss : 120.9012451171875 ValidationLoss : 116.9858 TestingLoss : 115.8378875
+Epoch : 1 TrainingLoss : 110.42204284667969 ValidationLoss : 107.2893125 TestingLoss : 106.347275
+Epoch : 1Storing Best Model with Previous Validation Loss : 116.9858 and Improved Validation Loss : 107.2893125
+Epoch : 2 TrainingLoss : 108.47779083251953 ValidationLoss : 102.9477625 TestingLoss : 101.96871875
+Epoch : 2Storing Best Model with Previous Validation Loss : 107.2893125 and Improved Validation Loss : 102.9477625
+Epoch : 3 TrainingLoss : 102.89793395996094 ValidationLoss : 101.4446125 TestingLoss : 100.5490375
+Epoch : 3Storing Best Model with Previous Validation Loss : 102.9477625 and Improved Validation Loss : 101.4446125
+Epoch : 4 TrainingLoss : 101.0806884765625 ValidationLoss : 100.0051875 TestingLoss : 99.1924625
+Epoch : 4Storing Best Model with Previous Validation Loss : 101.4446125 and Improved Validation Loss : 100.0051875
+Epoch : 5 TrainingLoss : 99.64617919921875 ValidationLoss : 98.783025 TestingLoss : 98.086475
+Epoch : 5Storing Best Model with Previous Validation Loss : 100.0051875 and Improved Validation Loss : 98.783025
+Epoch : 6 TrainingLoss : 98.3735122680664 ValidationLoss : 99.2424625 TestingLoss : 98.467175
+Epoch : 7 TrainingLoss : 100.97415924072266 ValidationLoss : 98.08845625 TestingLoss : 97.33314375
+Epoch : 7Storing Best Model with Previous Validation Loss : 98.783025 and Improved Validation Loss : 98.08845625
+Epoch : 8 TrainingLoss : 98.75994873046875 ValidationLoss : 96.73395 TestingLoss : 96.03490625
+Epoch : 8Storing Best Model with Previous Validation Loss : 98.08845625 and Improved Validation Loss : 96.73395
+Epoch : 9 TrainingLoss : 97.06051635742188 ValidationLoss : 97.395825 TestingLoss : 96.7341
+Epoch : 10 TrainingLoss : 95.58216094970703 ValidationLoss : 96.496625 TestingLoss : 95.759675
+Epoch : 10Storing Best Model with Previous Validation Loss : 96.73395 and Improved Validation Loss : 96.496625
+Epoch : 11 TrainingLoss : 93.50564575195312 ValidationLoss : 97.2881 TestingLoss : 96.501075
+Epoch : 12 TrainingLoss : 97.00148010253906 ValidationLoss : 95.6626375 TestingLoss : 94.866275
+Epoch : 12Storing Best Model with Previous Validation Loss : 96.496625 and Improved Validation Loss : 95.6626375
+Epoch : 13 TrainingLoss : 95.94664001464844 ValidationLoss : 95.8266625 TestingLoss : 95.3534125
+Epoch : 14 TrainingLoss : 98.03353881835938 ValidationLoss : 95.0798625 TestingLoss : 94.4627
+Epoch : 14Storing Best Model with Previous Validation Loss : 95.6626375 and Improved Validation Loss : 95.0798625
+Epoch : 15 TrainingLoss : 94.7716064453125 ValidationLoss : 95.4183375 TestingLoss : 94.6526875
+Epoch : 16 TrainingLoss : 96.94660949707031 ValidationLoss : 95.22329375 TestingLoss : 94.61565625
+Epoch : 17 TrainingLoss : 94.25288391113281 ValidationLoss : 94.17095 TestingLoss : 93.606625
+Epoch : 17Storing Best Model with Previous Validation Loss : 95.0798625 and Improved Validation Loss : 94.17095
+Epoch : 18 TrainingLoss : 92.1866455078125 ValidationLoss : 94.1701125 TestingLoss : 93.5753375
+Epoch : 18Storing Best Model with Previous Validation Loss : 94.17095 and Improved Validation Loss : 94.1701125
+Epoch : 19 TrainingLoss : 96.30894470214844 ValidationLoss : 94.19990625 TestingLoss : 93.78295625

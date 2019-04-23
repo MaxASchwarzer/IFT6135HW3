@@ -1,0 +1,18 @@
+args : Namespace(batch_size=64, dataset_path='Not Needed', display_im_count=200, display_im_count_per_row=10, load_name='EXPT_Q3', load_path='./vae_svhn_models', mode='test', model_name='EXPT_Q3', model_path='./vae_svhn_models', num_epochs=30, outfolder='./', perturb=2.0, repeat_q_3_1=10, repeat_q_3_2=10, sample_count=1000, seed=0)
+seed : 0
+batch_size : 64
+dataset_path : Not Needed
+mode : test
+outfolder : ./
+device : cuda
+num_epochs : 30
+model_path : ./vae_svhn_models
+model_name : EXPT_Q3
+load_path : ./vae_svhn_models
+load_name : EXPT_Q3
+sample_count : 1000
+repeat_q_3_1 : 10
+repeat_q_3_2 : 10
+perturb : 2.0
+display_im_count : 200
+display_im_count_per_row : 10

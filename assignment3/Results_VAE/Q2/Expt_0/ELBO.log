@@ -1,0 +1,3 @@
+[INFO] Train Negative ELBO per sample : 93.17597782958984
+[INFO] Valid Negative ELBO per sample : 94.31795920410157
+[INFO] Test Negative ELBO per sample : 93.7623087890625
